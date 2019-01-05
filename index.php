@@ -160,7 +160,7 @@
     </script>
 </head>
 <body>
-    <img src="<?php echo $urlStream; ?>" />
+    <?php /*<img src="<?php echo $urlStream; ?>" />*/ ?>
     <button type="button" id="disconnect" disabled>disconnect</button><br>
     SPEED:<input type="text" name="speed" id="speed" value="60">%<br>
     TURN:<input type="text" name="turn" id="turn" value="70">%<br>
