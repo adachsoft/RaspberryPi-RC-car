@@ -63,6 +63,7 @@
     <script>
         var meterSpeed = null;
         var meterTurn = null;
+        var meterTemp = null;
         var joystickOnX = false;
         var joystickOnY = false;
         var arrKeys = [];
@@ -76,15 +77,20 @@
             $('#disconnect').removeAttr('disabled');
             sendData();
         }
-        socket.error = (e) => {
+        socket.onerror = (e) => {
             $('#info').html('error');
         }
-        socket.close = (e) => {
+        socket.onclose = (e) => {
             $('#info').html('close');
             $('#disconnect').attr('disable', 'disable');
         }
         socket.onmessage = function(e) {
             $('#res').html(e.data);
+            let data = JSON.parse(e.data);
+            console.log(JSON.stringify(data.temp));
+            if(typeof data.temp!== 'undefined'){
+                meterTemp.refresh(data.temp);
+            }
         };
         $( document ).ready(function() {
             initf();
@@ -111,7 +117,6 @@
                 max: 100,
                 minTxt: "min",
                 maxTxt: "max",
-                symbol: '%',
                 donut: false,
                 gaugeWidthScale: 0.6,
                 counter: true,
@@ -135,6 +140,7 @@
                 value: 0,
                 title: 'engine power',
                 label: "engine power",
+                symbol: '%',
                 defaults: dflt,
               });
               meterTurn = new JustGage({
@@ -142,7 +148,18 @@
                 value: 0,
                 title: 'turn strength',
                 label: "turn strength",
+                symbol: '%',
                 defaults: dflt
+              });
+              
+              meterTemp = new JustGage({
+                id: 'meterTemp',
+                value: 0,
+                title: 'temp cpu',
+                label: "temp cpu",
+                
+                /*defaults: dflt,*/
+                symbol: 'C'
               });
               
               $('#current_speed').on('change', (e)=>{
@@ -226,38 +243,38 @@
 <body>
     <?php /*<img src="<?php echo $urlStream; ?>" />*/ ?>
     <div class="container">
-    <div class="row">
-        <div class="col-sm">
-            <button type="button" id="disconnect" disabled>disconnect</button>
-        </div>
-        <div class="col-sm input-group">
-            <div class="input-group-prepend">
-                <span class="input-group-text" id="inputGroup-sizing-sm">Max engine power:</span>
+        <div class="row">
+            <div class="col-sm-2">
+                <button type="button" id="disconnect" disabled>disconnect</button>
             </div>
-            <input type="text" name="speed" id="speed" value="60" class="form-control">%
-        </div>
-        <div class="col-sm input-group">
-            <div class="input-group-prepend">
-                <span class="input-group-text" id="inputGroup-sizing-sm">Max turn strength:</span>
+            <div class="col-sm-5 input-group">
+                <div class="input-group-prepend">
+                    <span class="input-group-text" id="inputGroup-sizing-sm">Max engine power[%]:</span>
+                </div>
+                <input type="text" name="speed" id="speed" value="60" class="form-control">
             </div>
-            <input type="text" name="turn" id="turn" value="70" class="form-control">%
+            <div class="col-sm-5 input-group">
+                <div class="input-group-prepend">
+                    <span class="input-group-text" id="inputGroup-sizing-sm">Max turn strength[%]:</span>
+                </div>
+                <input type="text" name="turn" id="turn" value="70" class="form-control">
+            </div>
         </div>
     </div>
-  </div>
-    <br>
-    <br>
-    <br>
+    <div id="info"></div>
+    <div id="res"></div>
     <hr>
+    
     <div style="display: none;">
         CURRENT SPEED:<input type="text" name="current_speed" id="current_speed" value="60">%<br>
         CURRENT TURN:<input type="text" name="current_turn" id="current_turn" value="70">%<br>
     </div>
-    <div id="info"></div>
-    <div id="res"></div>
     
     <div class="container">
         <div id="gg1" class="gauge"></div>
         <div id="gg2" class="gauge" data-value="0"></div>
+        <div id="meterTemp" class="gauge" data-value="0"></div>
+
     </div>
     
     <div id="con">

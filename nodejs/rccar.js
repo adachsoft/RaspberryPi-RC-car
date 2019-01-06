@@ -78,6 +78,7 @@ function sendData(ws){
     }
     sendTime = setTimeout(()=>{
         temp.measure(function(err, temp) {
+            log('Temp CPU: ' + temp);
             if (!err) {
                 let data = {
                     temp: temp,
@@ -92,7 +93,8 @@ function sendData(ws){
                     sendTime = null;
                 }
             }
-            
+            sendTime = null;
+            sendData(ws);  
         });
     }, 1000);
 }
