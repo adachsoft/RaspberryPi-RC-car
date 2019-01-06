@@ -139,6 +139,7 @@
               });
               meterTurn = new JustGage({
                 id: 'gg2',
+                value: 0,
                 title: 'turn strength',
                 label: "turn strength",
                 defaults: dflt
@@ -229,11 +230,17 @@
         <div class="col-sm">
             <button type="button" id="disconnect" disabled>disconnect</button>
         </div>
-        <div class="col-sm">
-            Max engine power:<input type="text" name="speed" id="speed" value="60">%
+        <div class="col-sm input-group">
+            <div class="input-group-prepend">
+                <span class="input-group-text" id="inputGroup-sizing-sm">Max engine power:</span>
+            </div>
+            <input type="text" name="speed" id="speed" value="60" class="form-control">%
         </div>
-        <div class="col-sm">
-            Max turn strength:<input type="text" name="turn" id="turn" value="70">%
+        <div class="col-sm input-group">
+            <div class="input-group-prepend">
+                <span class="input-group-text" id="inputGroup-sizing-sm">Max turn strength:</span>
+            </div>
+            <input type="text" name="turn" id="turn" value="70" class="form-control">%
         </div>
     </div>
   </div>
@@ -250,7 +257,7 @@
     
     <div class="container">
         <div id="gg1" class="gauge"></div>
-        <div id="gg2" class="gauge" data-value="25"></div>
+        <div id="gg2" class="gauge" data-value="0"></div>
     </div>
     
     <div id="con">
