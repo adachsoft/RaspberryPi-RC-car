@@ -77,10 +77,10 @@
             $('#disconnect').removeAttr('disabled');
             sendData();
         }
-        socket.error = (e) => {
+        socket.onerror = (e) => {
             $('#info').html('error');
         }
-        socket.close = (e) => {
+        socket.onclose = (e) => {
             $('#info').html('close');
             $('#disconnect').attr('disable', 'disable');
         }
