@@ -1,0 +1,6 @@
+{
+    "require": {
+        "gafhyb/justgage": "^1.2",
+        "twbs/bootstrap": "^4.2"
+    }
+}
