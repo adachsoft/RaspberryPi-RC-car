@@ -107,12 +107,12 @@
         
         function initf(){
             var dflt = {
-                min: 0,
+                min: -100,
                 max: 100,
                 minTxt: "min",
                 maxTxt: "max",
                 symbol: '%',
-                donut: true,
+                donut: false,
                 gaugeWidthScale: 0.6,
                 counter: true,
                 hideInnerShadow: true,
@@ -146,11 +146,11 @@
               });
               
               $('#current_speed').on('change', (e)=>{
-                  meterSpeed.refresh(Math.abs($(e.currentTarget).val()));
+                  meterSpeed.refresh(-1 * $(e.currentTarget).val());
               });
               
               $('#current_turn').on('change', (e)=>{
-                  meterTurn.refresh(Math.abs($(e.currentTarget).val()));
+                  meterTurn.refresh(1 * $(e.currentTarget).val());
               });
         }
         
