@@ -53,7 +53,11 @@
         }
 
     </style>
+    
+    <link href="vendor/twbs/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+    
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="vendor/twbs/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="vendor/gafhyb/justgage/raphael-2.1.4.min.js"></script>
     <script src="vendor/gafhyb/justgage/justgage.js"></script>
     <script>
@@ -220,9 +224,22 @@
 </head>
 <body>
     <?php /*<img src="<?php echo $urlStream; ?>" />*/ ?>
-    <button type="button" id="disconnect" disabled>disconnect</button><br>
-    SPEED:<input type="text" name="speed" id="speed" value="60">%<br>
-    TURN:<input type="text" name="turn" id="turn" value="70">%<br>
+    <div class="container">
+    <div class="row">
+        <div class="col-sm">
+            <button type="button" id="disconnect" disabled>disconnect</button>
+        </div>
+        <div class="col-sm">
+            Max engine power:<input type="text" name="speed" id="speed" value="60">%
+        </div>
+        <div class="col-sm">
+            Max turn strength:<input type="text" name="turn" id="turn" value="70">%
+        </div>
+    </div>
+  </div>
+    <br>
+    <br>
+    <br>
     <hr>
     <div style="display: none;">
         CURRENT SPEED:<input type="text" name="current_speed" id="current_speed" value="60">%<br>
