@@ -10,6 +10,7 @@
   "license": "ISC",
   "dependencies": {
     "ds18b20-raspi": "^0.3.3",
+    "nipplejs": "^0.8.0",
     "pi-temperature": "^2.0.0",
     "raspi": "^5.1.0",
     "raspi-soft-pwm": "^5.1.0",
