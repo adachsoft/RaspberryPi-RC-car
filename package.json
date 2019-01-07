@@ -15,6 +15,7 @@
     "raspi": "^5.1.0",
     "raspi-soft-pwm": "^5.1.0",
     "rpi-gpio": "^2.1.2",
+    "systeminformation": "^3.54.0",
     "ws": "^6.1.2"
   }
 }

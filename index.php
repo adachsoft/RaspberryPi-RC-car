@@ -8,52 +8,7 @@
     <title>Title of the document</title>
     
     <meta name="viewport" content="width=device-width, initial-scale=0.5, maximum-scale=0.5">
-    <style>
-        html, body {
-            padding: 0;
-            margin: 0;
-        }
-        #con {
-            position: fixed;
-            /*top: 0;*/
-            left: 0;
-            right: 0;
-            bottom: 0;
-            height: 30vh;
-            padding: 0;
-            margin: 0;
-            background-color: rgba(100, 50, 0, 0.3);
-        }
-        #left {
-            position: absolute;
-            left: 0;
-            top: 0;
-            height: 100%;
-            width: 50%;
-            background: rgba(0, 255, 0, 0.1);
-        }
-        #right {
-            position: absolute;
-            right: 0;
-            top: 0;
-            height: 100%;
-            width: 50%;
-            background: rgba(0, 0, 255, 0.1);
-        }
-        
-        .container {
-            width: 600px;
-            margin: 10px auto;
-            text-align: center;
-          }
-        .gauge {
-          width: 150px;
-          height: 150px;
-          display: inline-block;
-        }
-
-    </style>
-    
+    <link rel="stylesheet" type="text/css" href="css/main.css">
     <link href="vendor/twbs/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
     
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
@@ -69,12 +24,15 @@
         var arrKeys = [];
         var host = 'ws://<?php echo $host ?>:8000/websockets.php';
         var socket = new WebSocket(host);
-        $('#disconnect').on('click', (e)=>{
+        connectionStatus(3);
+        //$('#infoSuccess').hide();
+        /*$('#disconnect').on('click', (e)=>{
             socket.close();
-        });
+        });*/
         socket.onopen = (e) => {
             $('#info').html('connected');
-            $('#disconnect').removeAttr('disabled');
+            //$('#disconnect').removeAttr('disabled');
+            connectionStatus(1);
             sendData();
         }
         socket.onerror = (e) => {
@@ -82,7 +40,8 @@
         }
         socket.onclose = (e) => {
             $('#info').html('close');
-            $('#disconnect').attr('disable', 'disable');
+            //$('#disconnect').attr('disable', 'disable');
+            connectionStatus(2);
         }
         socket.onmessage = function(e) {
             $('#res').html(e.data);
@@ -110,6 +69,25 @@
                 console.log( 'K: ' +  arrKeys.indexOf(38) );
             });
         });
+        
+        function connectionStatus(status){
+            //<span class="badge badge-pill badge-danger">Danger</span>
+            switch(status){
+                case 1: 
+                    $('#infoSuccess').removeClass('badge-danger,badge-warning').addClass('badge-success');
+                    $('#infoSuccess').text('Connected');
+                    break;
+                case 2:
+                    $('#infoSuccess').removeClass('badge-success,badge-warning').addClass('badge-danger');
+                    $('#infoSuccess').text('Disconnected');
+                    break;
+                case 3:
+                    $('#infoSuccess').removeClass('badge-danger,badge-success').addClass('badge-warning');
+                    $('#infoSuccess').text('Connecting');
+                    break;
+            }
+            
+        }
         
         function initf(){
             var dflt = {
@@ -245,7 +223,8 @@
     <div class="container">
         <div class="row">
             <div class="col-sm-2">
-                <button type="button" id="disconnect" disabled>disconnect</button>
+                <!--<button type="button" id="disconnect" disabled>disconnect</button>-->
+                <span class="badge badge-pill badge badge-warning" id="infoSuccess">Connecting</span>
             </div>
             <div class="col-sm-5 input-group">
                 <div class="input-group-prepend">
