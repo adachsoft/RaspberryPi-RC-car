@@ -15,6 +15,7 @@
     <script src="vendor/twbs/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="vendor/gafhyb/justgage/raphael-2.1.4.min.js"></script>
     <script src="vendor/gafhyb/justgage/justgage.js"></script>
+    <script src="js/MainRc.js"></script>
     <script>
         var meterSpeed = null;
         var meterTurn = null;
@@ -74,15 +75,15 @@
             //<span class="badge badge-pill badge-danger">Danger</span>
             switch(status){
                 case 1: 
-                    $('#infoSuccess').removeClass('badge-danger,badge-warning').addClass('badge-success');
+                    $('#infoSuccess').removeClass('badge-danger badge-warning').addClass('badge-success');
                     $('#infoSuccess').text('Connected');
                     break;
                 case 2:
-                    $('#infoSuccess').removeClass('badge-success,badge-warning').addClass('badge-danger');
+                    $('#infoSuccess').removeClass('badge-success badge-warning').addClass('badge-danger');
                     $('#infoSuccess').text('Disconnected');
                     break;
                 case 3:
-                    $('#infoSuccess').removeClass('badge-danger,badge-success').addClass('badge-warning');
+                    $('#infoSuccess').removeClass('badge-danger badge-success').addClass('badge-warning');
                     $('#infoSuccess').text('Connecting');
                     break;
             }
