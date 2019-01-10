@@ -17,8 +17,14 @@ class MainRc{
         this.initEvents();
     }
     
+    isActive(){
+        return this.socket.readyState === 1;
+    }
+    
     initEvents(){
+        console.log('initEvents1');
         $( document ).ready(()=> {
+            console.log('initEvents');
             this.initMeters();
             this.initJoysticks();
             
@@ -38,10 +44,11 @@ class MainRc{
     }
     
     initJoysticks(){
+        console.log('initJoysticks');
         this.joystickL = nipplejs.create({
             zone: document.getElementById('left'),
             mode: 'static',
-            position: { left: '20%', top: '50%' },
+            position: { left: '120px', top: '50%' },
             color: 'green',
             size: 200
         });
@@ -54,6 +61,7 @@ class MainRc{
         });
 
         this.joystickL.on('start', (evt, data) => {
+            console.log( 'START L');
             this.joystickOnX = true;
         });
 
@@ -64,9 +72,9 @@ class MainRc{
 
         this.joystickL.on('move', (evt, data) => {
             //console.log( 'L: ' + JSON.stringify(data) );
-            //console.log( 'L: ' + JSON.stringify(data.instance.frontPosition) );
+            console.log( 'L: ' + JSON.stringify(data.instance.frontPosition) );
             if( data.instance.frontPosition.x > 10 ){
-                $('#current_turn').val( $('#turn').val() );
+                $('#current_turn').val( $('#turn').val() ).trigger('change');
             }else if( data.instance.frontPosition.x < -10 ){
                 $('#current_turn').val( -1 * $('#turn').val() ).trigger('change');
             }else{
@@ -76,7 +84,7 @@ class MainRc{
         });
 
         this.joystickR.on('start', function (evt, data) {
-            //console.log( 'START');
+            console.log( 'START');
             this.joystickOnY = true;
         });
 
@@ -269,7 +277,7 @@ class MainRc{
     }
     
     log(str){
-        console.log(str);
+        //console.log(str);
     }
     
 }
