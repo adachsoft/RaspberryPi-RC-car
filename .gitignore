@@ -3,4 +3,5 @@ nbproject/*
 test.php
 vendor/*
 */test/*
+config/config.json
 

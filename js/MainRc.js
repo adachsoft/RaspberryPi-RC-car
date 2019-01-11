@@ -17,10 +17,17 @@ class MainRc{
         this.initEvents();
     }
     
+    isActive(){
+        return this.socket.readyState === 1;
+    }
+    
     initEvents(){
+        console.log('initEvents1');
         $( document ).ready(()=> {
+            console.log('initEvents');
             this.initMeters();
             this.initJoysticks();
+            this.initButtons();
             
             $( document ).on("keyup", (e)=>{
                 var index = this.arrKeys.indexOf(e.keyCode);
@@ -37,11 +44,58 @@ class MainRc{
         });
     }
     
+    initButtons(){
+        $('#btnUp').on('mousedown touchstart', (e)=>{
+            this.setEnginePower(-1 * this.getMaxEnginePower());
+        });
+        $('#btnUp').on('mouseup touchend', (e)=>{
+            this.setEnginePower(0);
+        });
+        
+        $('#btnDown').on('mousedown touchstart', (e)=>{
+            this.setEnginePower(1 * this.getMaxEnginePower());
+        });
+        $('#btnDown').on('mouseup touchend', (e)=>{
+            this.setEnginePower(0);
+        });
+        
+        $('#btnLeft').on('mousedown touchstart', (e)=>{
+            this.setTurnStrength(-1 * this.getTurnStrength());
+        });
+        $('#btnLeft').on('mouseup touchend', (e)=>{
+            this.setTurnStrength(0);
+        });
+        
+        $('#btnRight').on('mousedown touchstart', (e)=>{
+            this.setTurnStrength(1 * this.getTurnStrength());
+        });
+        $('#btnRight').on('mouseup touchend', (e)=>{
+            this.setTurnStrength(0);
+        });
+    }
+    
+    getMaxEnginePower(){
+        return $('#speed').val();
+    }
+    
+    getTurnStrength(){
+        return $('#turn').val();
+    }
+    
+    setEnginePower(power){
+       $('#current_speed').val(power).trigger('change'); 
+    }
+    
+    setTurnStrength(turn){
+        $('#current_turn').val( turn ).trigger('change');
+    }
+    
     initJoysticks(){
+        console.log('initJoysticks');
         this.joystickL = nipplejs.create({
             zone: document.getElementById('left'),
             mode: 'static',
-            position: { left: '20%', top: '50%' },
+            position: { left: '120px', top: '50%' },
             color: 'green',
             size: 200
         });
@@ -54,6 +108,7 @@ class MainRc{
         });
 
         this.joystickL.on('start', (evt, data) => {
+            console.log( 'START L');
             this.joystickOnX = true;
         });
 
@@ -64,9 +119,9 @@ class MainRc{
 
         this.joystickL.on('move', (evt, data) => {
             //console.log( 'L: ' + JSON.stringify(data) );
-            //console.log( 'L: ' + JSON.stringify(data.instance.frontPosition) );
+            console.log( 'L: ' + JSON.stringify(data.instance.frontPosition) );
             if( data.instance.frontPosition.x > 10 ){
-                $('#current_turn').val( $('#turn').val() );
+                $('#current_turn').val( $('#turn').val() ).trigger('change');
             }else if( data.instance.frontPosition.x < -10 ){
                 $('#current_turn').val( -1 * $('#turn').val() ).trigger('change');
             }else{
@@ -76,7 +131,7 @@ class MainRc{
         });
 
         this.joystickR.on('start', function (evt, data) {
-            //console.log( 'START');
+            console.log( 'START');
             this.joystickOnY = true;
         });
 
@@ -269,7 +324,7 @@ class MainRc{
     }
     
     log(str){
-        console.log(str);
+        //console.log(str);
     }
     
 }
