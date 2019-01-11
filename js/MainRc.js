@@ -27,6 +27,7 @@ class MainRc{
             console.log('initEvents');
             this.initMeters();
             this.initJoysticks();
+            this.initButtons();
             
             $( document ).on("keyup", (e)=>{
                 var index = this.arrKeys.indexOf(e.keyCode);
@@ -41,6 +42,52 @@ class MainRc{
                 }
             });
         });
+    }
+    
+    initButtons(){
+        $('#btnUp').on('mousedown touchstart', (e)=>{
+            this.setEnginePower(-1 * this.getMaxEnginePower());
+        });
+        $('#btnUp').on('mouseup touchend', (e)=>{
+            this.setEnginePower(0);
+        });
+        
+        $('#btnDown').on('mousedown touchstart', (e)=>{
+            this.setEnginePower(1 * this.getMaxEnginePower());
+        });
+        $('#btnDown').on('mouseup touchend', (e)=>{
+            this.setEnginePower(0);
+        });
+        
+        $('#btnLeft').on('mousedown touchstart', (e)=>{
+            this.setTurnStrength(-1 * this.getTurnStrength());
+        });
+        $('#btnLeft').on('mouseup touchend', (e)=>{
+            this.setTurnStrength(0);
+        });
+        
+        $('#btnRight').on('mousedown touchstart', (e)=>{
+            this.setTurnStrength(1 * this.getTurnStrength());
+        });
+        $('#btnRight').on('mouseup touchend', (e)=>{
+            this.setTurnStrength(0);
+        });
+    }
+    
+    getMaxEnginePower(){
+        return $('#speed').val();
+    }
+    
+    getTurnStrength(){
+        return $('#turn').val();
+    }
+    
+    setEnginePower(power){
+       $('#current_speed').val(power).trigger('change'); 
+    }
+    
+    setTurnStrength(turn){
+        $('#current_turn').val( turn ).trigger('change');
     }
     
     initJoysticks(){

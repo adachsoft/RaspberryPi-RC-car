@@ -1,6 +1,8 @@
 {
     "require": {
         "gafhyb/justgage": "^1.2",
-        "twbs/bootstrap": "^4.2"
+        "twbs/bootstrap": "^4.2",
+        "smarty/smarty": "^3.1",
+        "components/font-awesome": "^5.4"
     }
 }

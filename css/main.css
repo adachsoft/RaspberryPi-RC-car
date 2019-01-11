@@ -40,3 +40,50 @@ html, body {
   height: 150px;
   display: inline-block;
 }
+
+.btnController{
+    position: absolute;
+    /*background-color: red;*/
+    width: 200px;
+    height: 200px;
+    top: calc(50% - 100px);
+    left: calc(50% - 100px);
+}
+
+.btnControlUp{
+    width: 15vw;
+    height: 15vw;
+    max-height: 10vh;
+    max-width: 10vh;
+    position: absolute;
+    top: -7vh;
+}
+
+.btnControlDown{
+    width: 15vw;
+    height: 15vw;
+    max-height: 10vh;
+    max-width: 10vh;
+    position: absolute;
+    top: 7vh;
+}
+
+.btnControlRight{
+    width: 15vw;
+    height: 15vw;
+    max-height: 10vh;
+    max-width: 10vh;
+    position: absolute;
+    top: 7vh;
+    left: 15vh;
+}
+
+.btnControlLeft{
+    width: 15vw;
+    height: 15vw;
+    max-height: 10vh;
+    max-width: 10vh;
+    position: absolute;
+    top: 7vh;
+    left: -15vh;
+}
