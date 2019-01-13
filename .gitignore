@@ -4,4 +4,6 @@ test.php
 vendor/*
 */test/*
 config/config.json
+templates_c/*
+
 
