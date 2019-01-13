@@ -31,10 +31,21 @@ html, body {
 }
 
 .container {
-    width: 600px;
+    width: 640px;
     margin: 3px auto;
     text-align: center;
-  }
+    position: relative;
+}
+
+.containerCtrl {
+    width: 640px;
+    height: 480px;
+    margin: 3px auto;
+    text-align: center;
+    position: relative;
+    background: rgba(0, 0, 255, 0.1);
+}
+
 .gauge {
   width: 150px;
   height: 150px;
@@ -86,4 +97,20 @@ html, body {
     position: absolute;
     top: 7vh;
     left: -15vh;
+}
+
+.meters{
+    /*background-color: rgba(255, 0, 100, 0.2);*/
+    position: absolute;
+    bottom: 0px;
+    left: 0px;
+    right: 0px;
+}
+
+.stream{
+    max-width: 80vw;
+    /*width: calc(640px * 0.8);
+    height: calc(480px * 0.8);*/
+    width: 100%;
+    height: 100%;   
 }
