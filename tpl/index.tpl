@@ -32,6 +32,15 @@
             });
         }
         
+        function snapshot(){
+            $.ajax({
+                type: "POST",
+                url: 'snapshot.php',
+            }).done((res)=>{
+                console.log('SAVE: ' + res);
+            });
+        }
+        
         $( document ).ready(()=> {
             $('#speed').on('change', ()=>{
                 console.log('change');
@@ -41,6 +50,9 @@
                 console.log('change');
                 save();
             });
+            $('#snapshot').on('click', ()=>{
+                snapshot();
+            });
         });
         
     </script>
@@ -48,20 +60,23 @@
 <body>
     <div class="container">
         <div class="row">
-            <div class="col-sm-2">
+            <div class="col-sm-1">
                 <span class="badge badge-pill badge badge-warning" id="infoSuccess">Connecting</span>
             </div>
-            <div class="col-sm-5 input-group">
+            <div class="col-sm-3 input-group input-group-sm">
                 <div class="input-group-prepend">
                     <span class="input-group-text" id="inputGroup-sizing-sm">Max engine power[%]:</span>
                 </div>
-                <input type="text" name="speed" id="speed" value="{$CONFIG->get('maxEnginePower')}" class="form-control">
+                <input type="text" name="speed" id="speed" value="{$CONFIG->get('maxEnginePower')}" class="form-control-sm inputInt">
             </div>
-            <div class="col-sm-5 input-group">
+            <div class="col-sm-3 input-group input-group-sm">
                 <div class="input-group-prepend">
                     <span class="input-group-text" id="inputGroup-sizing-sm">Max turn strength[%]:</span>
                 </div>
-                <input type="text" name="turn" id="turn" value="{$CONFIG->get('maxTurnStrength')}" class="form-control">
+                <input type="text" name="turn" id="turn" value="{$CONFIG->get('maxTurnStrength')}" class="form-control-sm inputInt">
+            </div>
+            <div class="col-sm-3 input-group input-group-sm">
+                <button type="button" class="btn btn-sm btn-success" id="snapshot">Snapshot</button>
             </div>
         </div>
     </div>

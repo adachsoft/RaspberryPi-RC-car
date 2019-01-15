@@ -1,23 +1,45 @@
-const sensor = require('ds18b20-raspi');
-var ds1820Temp = null;
+const process = require('process');
+const fs = require('fs');
 
-var WebSocketServer = require('ws').Server;
-var temp = require("pi-temperature");
-var wss = new WebSocketServer({port: 8000});
+if (process.pid) {
+    console.log('This process is your pid ' + process.pid);
+    fs.writeFileSync('../tmp/rccar.lock', process.pid);
+}
+
+var configFile = '../config/configServer.json';
+if (!fs.existsSync(configFile)) {
+    configFile = '../config/configServerDefault.json'
+}
+
+const config = require(configFile);
+console.log('Server port: ' + config.server.port);
+console.log('PWM A-0: ' + config.pwmA.pin[0]);
+console.log('PWM A-1: ' + config.pwmA.pin[1]);
+//console.log('PWM A reverse: ' + config.pwmA.reverse);
+console.log('PWM B-0: ' + config.pwmB.pin[0]);
+console.log('PWM B-1: ' + config.pwmB.pin[1]);
+//console.log('PWM B reverse: ' + config.pwmB.reverse);
+console.log('Engine time out: ' + config.engineTimeOut);
+
+const sensor = require('ds18b20-raspi');
+const WebSocketServer = require('ws').Server;
+const temp = require("pi-temperature");
+const wss = new WebSocketServer({port: config.server.port});
 
 const raspi = require('raspi');
 const pwm = require('raspi-soft-pwm');
-const p1 = new pwm.SoftPWM('GPIO26');
-const p2 = new pwm.SoftPWM('GPIO19');
+const p1 = new pwm.SoftPWM(config.pwmA.pin[0]);
+const p2 = new pwm.SoftPWM(config.pwmA.pin[1]);
 
-const t1 = new pwm.SoftPWM('GPIO13');
-const t2 = new pwm.SoftPWM('GPIO12');
+const t1 = new pwm.SoftPWM(config.pwmB.pin[0]);
+const t2 = new pwm.SoftPWM(config.pwmB.pin[1]);
 var motorTime = null;
 var turnTime = null;
 var sendTime = null;
-var timeOut = 150;
+var timeOut = config.engineTimeOut;
+var ds1820Temp = null;
 
-var gpio = require('rpi-gpio');
+const gpio = require('rpi-gpio');
 //var gpiop = gpio.promise;
  
 //gpio.setMode(gpio.MODE_BCM);
@@ -102,13 +124,7 @@ function sendData(ws){
 function turn(val){
     val = val / 100;
     log('START turn: ' + val);
-    if( val >= 0 ){
-        t1.write(val);
-        t2.write(0.0);
-    }else{
-        t1.write(0.0);
-        t2.write(-1 * val);
-    }
+    pwmVal(t1, t2, val);
     if( turnTime ){
        clearTimeout(turnTime);
        turnTime = null;
@@ -122,17 +138,10 @@ function turn(val){
     }, timeOut);
 }
 
-
 function motor(val){
     val = val / 100;
     log('START motor: ' + val);
-    if( val >= 0 ){
-        p1.write(val);
-        p2.write(0.0);
-    }else{
-        p1.write(0.0);
-        p2.write(-1 * val);
-    }
+    pwmVal(p1, p2, val);
     
     if( motorTime ){
        clearTimeout(motorTime);
@@ -144,6 +153,16 @@ function motor(val){
         p2.write(0.0);
         motorTime = null;
     }, timeOut);
+}
+
+function pwmVal(pwm0, pwm1, val){
+    if( val >= 0 ){
+        pwm0.write(val);
+        pwm1.write(0);
+    }else{
+        pwm0.write(0);
+        pwm1.write(-1 * val);
+    }
 }
 
 function log(str){
