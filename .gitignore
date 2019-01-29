@@ -7,3 +7,4 @@ config/config.json
 templates_c/*
 tmp/*
 snapshots/*
+*Test.*

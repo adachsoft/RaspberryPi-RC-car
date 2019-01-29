@@ -5,6 +5,8 @@
     $host = $_SERVER['HTTP_HOST'];
 
     
+    
+    
     $smarty = new Smarty();
     $smarty->setTemplateDir('tpl/');
     $smarty->assign('TIME', time());
