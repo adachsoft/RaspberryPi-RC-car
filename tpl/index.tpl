@@ -76,7 +76,9 @@
                 <input type="text" name="turn" id="turn" value="{$CONFIG->get('maxTurnStrength')}" class="form-control-sm inputInt">
             </div>
             <div class="col-sm-3 input-group input-group-sm">
+                {if $CONFIG->get('camera')}
                 <button type="button" class="btn btn-sm btn-success" id="snapshot">Snapshot</button>
+                {/if}
             </div>
         </div>
     </div>
@@ -86,25 +88,38 @@
     </div>
     <hr class="m-0">
     
-    <div class="containerCtrl">
-        <img src="{$URL_STREAM}" class="stream" />
-        <div class="meters">
-            <div id="meterEnginePower" class="gauge" data-value="0"></div>
-            <div id="meterTurnStrength" class="gauge" data-value="0"></div>
-            <div id="meterTemp" class="gauge" data-value="0"></div>   
+    <ul class="nav nav-tabs" id="myTab" role="tablist">
+        <li class="nav-item">
+            <a class="nav-link active" id="home-tab" data-toggle="tab" href="#tabMain" role="tab" aria-controls="home" aria-selected="true">
+                <i class="fas fa-gamepad"></i>&nbsp;
+                Main
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" id="profile-tab" data-toggle="tab" href="#tabConfig" role="tab" aria-controls="profile" aria-selected="false">
+                <i class="fas fa-arrows-alt"></i>&nbsp;
+                Configuration
+            </a>
+        </li>
+        {if $CONFIG->get('camera')}
+        <li class="nav-item">
+            <a class="nav-link" id="profile-tab" data-toggle="tab" href="#tabSnapshots" role="tab" aria-controls="profile" aria-selected="false">
+                <i class="fas fa-arrows-alt"></i>&nbsp;
+                Snapshots
+            </a>
+        </li>
+        {/if}
+    </ul>
+    <div class="tab-content" id="myTabContent">
+        <div class="tab-pane fade show active" id="tabMain" role="tabpanel" aria-labelledby="home-tab">
+            {include file='tabMain.tpl'}
         </div>
-        
+        <div class="tab-pane fade" id="tabConfig" role="tabpanel" aria-labelledby="profile-tab">
+            {include file='tabConfig.tpl'}
+        </div>
+        <div class="tab-pane fade" id="tabSnapshots" role="tabpanel" aria-labelledby="profile-tab">
+            {include file='tabSnapshots.tpl'}
+        </div>
     </div>
-    
-    <div style="display: none;">
-        CURRENT SPEED:<input type="text" name="current_speed" id="current_speed" value="60">%<br>
-        CURRENT TURN:<input type="text" name="current_turn" id="current_turn" value="70">%<br>
-    </div>
-    <div style="display: none;">
-        {include file='gamepad.tpl'}
-    </div>    
-
-    
-    
 </body>
 </html>
