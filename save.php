@@ -2,8 +2,14 @@
 
 require_once './app/Config.php';
 
-$config = new Config('./config/config.json');
-$config->set('maxEnginePower', $_POST['maxEnginePower']);
-$config->set('maxTurnStrength', $_POST['maxTurnStrength']);
+$config = new Config($_POST['config_type']);
+foreach( $_POST['config'] as $key => $val ){
+    if( !$config->setForTpl($key, $val) ){
+        echo "No found: $key\r\n";
+    }
+}
 $config->save();
 
+if( isset($_POST['url']) ){
+    header("Location: {$_POST['url']}");
+}

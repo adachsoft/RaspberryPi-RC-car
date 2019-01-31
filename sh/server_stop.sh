@@ -1,7 +1,7 @@
 #!/bin/bash
 
 
-file="../tmp/rccar.lock"
+file="./tmp/rccar.lock"
 if [ -f "$file" ]
 then
     pid="$(cat $file)"

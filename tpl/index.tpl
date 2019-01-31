@@ -16,7 +16,7 @@
     <script src="/node_modules/nipplejs/dist/nipplejs.js"></script>
     <script src="js/MainRc.js?t={$TIME}"></script>
     <script>
-        var host = 'ws://{$HOST}:8000/websockets.php';
+        var host = 'ws://{$HOST}:8000/websockets.php?t={$TIME}';
         var rcCar = new MainRc(host);
         
         function save(){
@@ -24,8 +24,11 @@
                 type: "POST",
                 url: 'save.php',
                 data: {
-                    maxEnginePower: $('#speed').val(),
-                    maxTurnStrength: $('#turn').val(),
+                    config_type: 'config',
+                    config: {
+                        maxEnginePower: $('#speed').val(),
+                        maxTurnStrength: $('#turn').val(),
+                    }
                 },
             }).done((res)=>{
                 console.log('SAVE: ' + res);
