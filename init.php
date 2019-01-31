@@ -14,4 +14,4 @@ $version = include './version.php';
 require_once './app/Config.php';
 require __DIR_ROOT__ . 'vendor/autoload.php';
 
-$config = new Config('./config/config.json');
+$config = new Config('config');

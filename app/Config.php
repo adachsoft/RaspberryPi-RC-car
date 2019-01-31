@@ -1,6 +1,8 @@
 <?php
 
 class Config{
+    public $path = './config/';
+    public $extension = '.json';
     private $file;
     private $data = [];
 
@@ -11,16 +13,19 @@ class Config{
 
     public function save() : bool
     {
-        return file_put_contents($this->file, json_encode($this->data));
+        return file_put_contents("{$this->path}{$this->file}{$this->extension}", json_encode($this->data));
     }
     
     public function load(){
-        if( file_exists($this->file) ){
-            $file = $this->file;
-        }else{
-            $file = './config/configDefault.json';
+        $file = "{$this->path}{$this->file}{$this->extension}";
+        if( !file_exists($file) ){
+            $file = "{$this->path}{$this->file}Default{$this->extension}";
         }
         $this->data = json_decode(file_get_contents($file), true);
+    }
+    
+    public function getAll(){
+        return $this->data;
     }
     
     public function get($key, $def=null){
@@ -29,5 +34,38 @@ class Config{
     
     public function set($key, $val){
         return $this->data[$key] = $val;
+    }
+    
+    public function getForTpl($key, $def=null){
+        $b = true;
+        $arr = explode('.', $key);
+        $val = $this->data;
+        foreach ($arr as $k){
+            if( isset($val[$k]) ){
+                $val = $val[$k];
+            }else{
+                $b = false;
+                break;
+            }
+        }
+        return $b ? $val : $def;
+    }
+    
+    public function setForTpl($key, $val){
+        $b = true;
+        $arr = explode('.', $key);
+        $currentVal = &$this->data;
+        foreach ($arr as $k){
+            if( isset($currentVal[$k]) ){
+                $currentVal = &$currentVal[$k];
+            }else{
+                $b = false;
+                break;
+            }
+        }
+        if( $b ){
+            $currentVal = $val;
+        }
+        return $b;
     }
 }

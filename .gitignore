@@ -4,6 +4,7 @@ test.php
 vendor/*
 */test/*
 config/config.json
+config/configServer.json
 templates_c/*
 tmp/*
 snapshots/*

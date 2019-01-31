@@ -41,16 +41,22 @@ if (!fs.existsSync(configVehicleFile)) {
 const configVehicle = require(configVehicleFile);
 const vehicle = new Vehicle(configVehicle);
 
- 
+//var wsClient = [];
 raspi.init(() => {
     console.log('INIT');
     //gpio.write(21, true);
   
-    wss.on('connection', function (ws) {
+    wss.on('connection', function (ws, req) {
+        log('New connection: ' + req.connection.remoteAddress);
         ws.on('message', function (message) {
             let data = JSON.parse(message);
             vehicle.motor(data.speed);
             vehicle.turn(data.turn);
+            if( typeof data.cmd !== 'undefined' ){
+                if( data.cmd==='exit' ){
+                    process.exit();
+                }
+            }
             console.log('received: %s', message);
         });
         ws.on('close', ()=>{
@@ -58,6 +64,7 @@ raspi.init(() => {
             clearTimeout(sendTime);
             sendTime = null;
         });
+        //wsClient.push(ws);
         sendData(ws);
     });
 });
