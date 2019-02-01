@@ -1,59 +1,24 @@
 
 <div class="m-2">
-    configServer
-    <form action="save.php" method="POST">
-        <input type="hidden" name="config_type" value="configServer" />
-        <input type="hidden" name="url" value="index.php" />
-        {assign var=SERVER value=['server.port', 'engineTimeOut', 'controller']}
-        {foreach from=$SERVER item=$ITEM}
-            <div class="input-group input-group-sm mb-1">
-                <div class="input-group-prepend">
-                    <span class="input-group-text" id="inputGroup-sizing-sm">{$ITEM}:</span>
-                </div>
-                <input type="text" name="config[{$ITEM}]" id="{$ITEM}" value="{$CONFIG_SERVER->getForTpl($ITEM)}" class="form-control-sm" style="width: 200px;">
-            </div>
-        {/foreach}
-        <div class="input-group input-group-sm mb-1">
-            <button type="submit" class="btn btn-success">Save</button>
-        </div>
-    </form>
-    <hr>
+    {assign var=ITEMS value=['server.port', 'engineTimeOut', 'controller']}
+    {assign var=CONFIG_OBJ value=$CONFIG_SERVER}
+    {assign var=CONFIG_NAME value='configServer'}
+    {include file='config.tpl'}
     
-    VehicleL298n
-    <form action="save.php" method="POST">
-        <input type="hidden" name="config_type" value="VehicleL298n" />
-        <input type="hidden" name="url" value="index.php" />
-        {assign var=SERVER value=['pinMotor0', 'pinMotor1', 'pinTurn0', 'pinTurn1', 'timeOut']}
-        {foreach from=$SERVER item=$ITEM}
-            <div class="input-group input-group-sm mb-1">
-                <div class="input-group-prepend">
-                    <span class="input-group-text" id="inputGroup-sizing-sm">{$ITEM}:</span>
-                </div>
-                <input type="text" name="config[{$ITEM}]" id="{$ITEM}" value="{$CONFIG_VEHICLEL298N->getForTpl($ITEM)}" class="form-control-sm" style="width: 200px;">
-            </div>
-        {/foreach}
-        <div class="input-group input-group-sm mb-1">
-            <button type="submit" class="btn btn-success">Save</button>
-        </div>
-    </form>
-    <hr>
+    {if $CONFIG_SERVER->get('controller')==='VehicleL298n'}
+        {assign var=ITEMS value=['pinMotor0', 'pinMotor1', 'pinTurn0', 'pinTurn1', 'timeOut']}
+        {assign var=CONFIG_OBJ value=$CONFIG_VEHICLEL298N}
+        {assign var=CONFIG_NAME value='VehicleL298n'}
+        {include file='config.tpl'}
+    {elseif $CONFIG_SERVER->get('controller')==='VehicleServoPWM' }
+        {assign var=ITEMS value=['pinMotor0', 'pinMotor1', 'pinServo', 'servoMin', 'servoMax', 'timeOut']}
+        {assign var=CONFIG_OBJ value=$CONFIG_VEHICLEL_SERVO_PWM}
+        {assign var=CONFIG_NAME value='VehicleServoPWM'}
+        {include file='config.tpl'}
+    {/if}
     
-    {*config
-    <form action="save.php" method="POST">
-        <input type="hidden" name="config_type" value="config" />
-        <input type="hidden" name="url" value="index.php" />
-        {assign var=SERVER value=['maxEnginePower', 'maxTurnStrength', 'camera']}
-        {foreach from=$SERVER item=$ITEM}
-            <div class="input-group input-group-sm mb-1">
-                <div class="input-group-prepend">
-                    <span class="input-group-text" id="inputGroup-sizing-sm">{$ITEM}:</span>
-                </div>
-                <input type="text" name="config[{$ITEM}]" id="{$ITEM}" value="{$CONFIG->getForTpl($ITEM)}" class="form-control-sm" style="width: 200px;">
-            </div>
-        {/foreach}
-        <div class="input-group input-group-sm mb-1">
-            <button type="submit" class="btn btn-success">Save</button>
-        </div>
-    </form>
-    <hr>*}
+    {assign var=ITEMS value=['maxEnginePower', 'maxTurnStrength', 'camera']}
+    {assign var=CONFIG_OBJ value=$CONFIG}
+    {assign var=CONFIG_NAME value='config'}
+    {include file='config.tpl'}
 </div>
