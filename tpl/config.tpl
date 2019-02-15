@@ -3,7 +3,6 @@
 <form action="save.php" method="POST">
     <input type="hidden" name="config_type" value="config" />
     <input type="hidden" name="url" value="index.php" />
-    {*{assign var=ITEMS value=['maxEnginePower', 'maxTurnStrength', 'camera']}*}
     {foreach from=$ITEMS item=$ITEM}
         <div class="input-group input-group-sm mb-1">
             <div class="input-group-prepend">
