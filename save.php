@@ -8,7 +8,9 @@ foreach( $_POST['config'] as $key => $val ){
         echo "No found: $key\r\n";
     }
 }
-$config->save();
+if( !$config->save() ){
+    throw new Exception("Problem with writing to a file");
+}
 
 if( isset($_POST['url']) ){
     header("Location: {$_POST['url']}");

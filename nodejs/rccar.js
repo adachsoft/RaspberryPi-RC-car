@@ -32,6 +32,9 @@ const raspi = require('raspi');
 var sendTime = null;
 var ds1820Temp = null;
 
+const Gpio = require('pigpio').Gpio;
+const horn = new Gpio(5, {mode: Gpio.OUTPUT});
+var hornTime = null;
 
 const Vehicle = require('./' + config.controller + '.js');
 var configVehicleFile = '../config/' + config.controller + '.json';
@@ -44,7 +47,7 @@ const vehicle = new Vehicle(configVehicle);
 //var wsClient = [];
 raspi.init(() => {
     console.log('INIT');
-    //gpio.write(21, true);
+    horn.digitalWrite(false);
   
     wss.on('connection', function (ws, req) {
         log('New connection: ' + req.connection.remoteAddress);
@@ -52,6 +55,9 @@ raspi.init(() => {
             let data = JSON.parse(message);
             vehicle.motor(data.speed);
             vehicle.turn(data.turn);
+            if( typeof data.horn !== 'undefined' ){
+                hornCtrl(data.horn);
+            }
             if( typeof data.cmd !== 'undefined' ){
                 if( data.cmd==='exit' ){
                     process.exit();
@@ -63,6 +69,7 @@ raspi.init(() => {
             console.log('CLOSE');
             clearTimeout(sendTime);
             sendTime = null;
+            horn.digitalWrite(false);
         });
         //wsClient.push(ws);
         sendData(ws);
@@ -126,4 +133,18 @@ function sendData(ws){
 
 function log(str){
     console.log(str);
+}
+
+function hornCtrl(hornOn){
+    horn.digitalWrite(hornOn);
+    if( hornOn ){
+        if( hornTime ){
+            clearTimeout(hornTime);
+            hornTime = null;
+        }
+        hornTime = setTimeout(()=>{
+            horn.digitalWrite(false);
+            hornTime = null;
+        }, config.engineTimeOut);
+    }
 }
