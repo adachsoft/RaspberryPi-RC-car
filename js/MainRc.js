@@ -15,6 +15,9 @@ class MainRc{
         this.meterTemp = null;
         this.connect();
         this.initEvents();
+        this.data = {
+            horn: false
+        };
     }
     
     isActive(){
@@ -167,6 +170,7 @@ class MainRc{
                this.arrKeys.indexOf(40) >= 0 ||
                this.arrKeys.indexOf(37) >= 0 ||
                this.arrKeys.indexOf(39) >= 0 ||
+               this.arrKeys.indexOf(72) >= 0 ||
                this.joystickOnY ||
                this.joystickOnX;
     }
@@ -177,7 +181,7 @@ class MainRc{
         return {
             speed: speed,
             turn: turn,
-            l: 5,
+            horn: this.data.horn
         };
     }
     
@@ -206,6 +210,7 @@ class MainRc{
             turn = 1 * $('#turn').val();
             bTurn = true;
         }
+        this.data.horn = this.arrKeys.indexOf(72) >= 0;
         if(bSpeed){
             $('#current_speed').val(speed).trigger('change');
         }else{
