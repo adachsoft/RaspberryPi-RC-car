@@ -12,6 +12,8 @@
         <testsuite name="Unit">
             <!--<directory suffix="Test.php">./tests/Unit</directory>-->
             <file>App/Save.php</file>
+            <file>App/Config/FileManagerTest.php</file>
+            <file>App/Config/ConfigTest.php</file>
         </testsuite>
     </testsuites>
     <!--<filter>

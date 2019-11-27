@@ -44,6 +44,13 @@ if (!fs.existsSync(configVehicleFile)) {
 const configVehicle = require(configVehicleFile);
 const vehicle = new Vehicle(configVehicle);
 
+for (const [key, value] of Object.entries(config.plugins)) {
+    if( value.enable ){
+        console.log('Load plugin: ' + key);
+        require('./plugins/' + key + '.js');
+    }
+}
+
 //var wsClient = [];
 raspi.init(() => {
     console.log('INIT');
