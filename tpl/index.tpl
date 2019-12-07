@@ -20,7 +20,7 @@
     <script src="js/MainRc.js?t={$TIME}"></script>
     <script>
         var plugins = new Array();
-        {foreach from=$PLUGINS item=PLUGIN}
+        {foreach from=$PLUGINS_NAME item=PLUGIN}
             plugins.push( new {$PLUGIN}() );
         {/foreach}
 
@@ -69,6 +69,9 @@
     </script>
 </head>
 <body>
+    {foreach from=$PLUGINS->getTplFilesIndex() item=PLUGIN_TPL_FILE_INDEX}
+        {include file=$PLUGIN_TPL_FILE_INDEX}
+    {/foreach}
     <div class="container">
         <div class="row">
             <div class="col-sm-1">
