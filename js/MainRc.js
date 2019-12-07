@@ -1,12 +1,8 @@
-/* 
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 
-
-class MainRc{
-    constructor(host){
+class MainRc
+{
+    constructor(host, plugins){
+        this.plugins = plugins;
         this.joystickOnX = false;
         this.joystickOnY = false;
         this.arrKeys = [];
@@ -24,10 +20,18 @@ class MainRc{
         return this.socket.readyState === 1;
     }
     
-    initEvents(){
+    initEvents()
+    {
         console.log('initEvents1');
         $( document ).ready(()=> {
             console.log('initEvents');
+            
+            this.plugins.forEach((plugin)=>{
+                if (plugin.init && typeof plugin.init === "function") {
+                    plugin.init();
+                }
+            });
+
             this.initMeters();
             this.initJoysticks();
             this.initButtons();
@@ -37,16 +41,18 @@ class MainRc{
                 if (index > -1) {
                   this.arrKeys.splice(index, 1);
                   this.getFromKeys();
+                  this.onKeyUp(this.arrKeys);
                 }
             });
             $( document ).on("keydown", (e)=>{
                 if(this.arrKeys.indexOf(e.keyCode) < 0){
                     this.arrKeys.push(e.keyCode);
+                    this.onKeyDown(this.arrKeys);
                 }
             });
         });
     }
-    
+
     initButtons(){
         $('#btnUp').on('mousedown touchstart', (e)=>{
             this.setEnginePower(-1 * this.getMaxEnginePower());
@@ -165,23 +171,42 @@ class MainRc{
         }, 100);
     }
         
-    shouldSend(){
-       return this.arrKeys.indexOf(38) >= 0 || 
-               this.arrKeys.indexOf(40) >= 0 ||
-               this.arrKeys.indexOf(37) >= 0 ||
-               this.arrKeys.indexOf(39) >= 0 ||
-               this.arrKeys.indexOf(72) >= 0 ||
-               this.joystickOnY ||
-               this.joystickOnX;
+    shouldSend()
+    {
+        let shouldSendData = false;
+        this.plugins.forEach((plugin)=>{
+            if (plugin.shouldSend && typeof plugin.shouldSend === "function") {
+                shouldSendData = shouldSendData || plugin.shouldSend();
+            }
+        });
+
+        return  shouldSendData ||
+                this.arrKeys.indexOf(38) >= 0 || 
+                this.arrKeys.indexOf(40) >= 0 ||
+                this.arrKeys.indexOf(37) >= 0 ||
+                this.arrKeys.indexOf(39) >= 0 ||
+                this.arrKeys.indexOf(72) >= 0 ||
+                this.joystickOnY ||
+                this.joystickOnX;
     }
     
     makeCmd(){
         let speed = $('#current_speed').val();
         let turn = $('#current_turn').val();
+
+        let pluginsData = {};
+        this.plugins.forEach((plugin)=>{
+            if (plugin.createDataToSend && typeof plugin.createDataToSend === "function") {
+                let data = plugin.createDataToSend();
+                pluginsData = $.extend(pluginsData, data);
+            }
+        });
+
         return {
             speed: speed,
             turn: turn,
-            horn: this.data.horn
+            horn: this.data.horn,
+            plugins: pluginsData
         };
     }
     
@@ -305,6 +330,7 @@ class MainRc{
             $('#res').html(e.data);
             let data = JSON.parse(e.data);
             this.log(JSON.stringify(data.temp));
+            this.onMessage(data);
             if(typeof data.temp!== 'undefined'){
                 this.meterTemp.refresh(data.temp);
             }
@@ -316,10 +342,12 @@ class MainRc{
             case 1: 
                 $('#infoSuccess').removeClass('badge-danger badge-warning').addClass('badge-success');
                 $('#infoSuccess').text('Connected');
+                $( document ).trigger( "rc_connected");
                 break;
             case 2:
                 $('#infoSuccess').removeClass('badge-success badge-warning').addClass('badge-danger');
                 $('#infoSuccess').text('Disconnected');
+                $( document ).trigger( "rc_disconnected");
                 break;
             case 3:
                 $('#infoSuccess').removeClass('badge-danger badge-success').addClass('badge-warning');
@@ -332,4 +360,30 @@ class MainRc{
         //console.log(str);
     }
     
+    onMessage(data)
+    {
+        this.plugins.forEach((plugin)=>{
+            if (plugin.onMessage && typeof plugin.onMessage === "function") {
+                plugin.onMessage(data);
+            }
+        });
+    }
+
+    onKeyUp()
+    {
+        this.plugins.forEach((plugin)=>{
+            if (plugin.onKeyUp && typeof plugin.onKeyUp === "function") {
+                plugin.onKeyUp(this.arrKeys);
+            }
+        });
+    }
+
+    onKeyDown()
+    {
+        this.plugins.forEach((plugin)=>{
+            if (plugin.onKeyDown && typeof plugin.onKeyDown === "function") {
+                plugin.onKeyDown(this.arrKeys);
+            }
+        });
+    }
 }

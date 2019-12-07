@@ -43,23 +43,22 @@ if (!fs.existsSync(configVehicleFile)) {
 }
 const configVehicle = require(configVehicleFile);
 const vehicle = new Vehicle(configVehicle);
+const PluginManager = require('./PluginManager.js');
+var pluginManager = new PluginManager(config);
 
-for (const [key, value] of Object.entries(config.plugins)) {
-    if( value.enable ){
-        console.log('Load plugin: ' + key);
-        require('./plugins/' + key + '.js');
-    }
-}
+pluginManager.load();
 
-//var wsClient = [];
 raspi.init(() => {
     console.log('INIT');
     horn.digitalWrite(false);
+    pluginManager.onInit();
   
     wss.on('connection', function (ws, req) {
         log('New connection: ' + req.connection.remoteAddress);
+        pluginManager.onConnection(ws, req);
         ws.on('message', function (message) {
             let data = JSON.parse(message);
+            pluginManager.onMessage(data);
             vehicle.motor(data.speed);
             vehicle.turn(data.turn);
             if( typeof data.horn !== 'undefined' ){
@@ -83,7 +82,8 @@ raspi.init(() => {
     });
 });
 
-//checkTemp();
+
+
 
 function checkTemp(){
     /*setTimeout(()=>{
@@ -111,7 +111,10 @@ function checkTemp(){
     });
 }
 
-function sendData(ws){
+function sendData(ws)
+{
+    console.log('sendData');
+
     if( sendTime!==null ){
         return;
     }
@@ -121,7 +124,8 @@ function sendData(ws){
             if (!err) {
                 let data = {
                     temp: temp,
-                    ds1820: ds1820Temp
+                    ds1820: ds1820Temp,
+                    plugins: pluginManager.onSend()
                 };
                 try{
                     ws.send(JSON.stringify(data), ()=>{
@@ -138,7 +142,8 @@ function sendData(ws){
     }, 1000);
 }
 
-function log(str){
+function log(str)
+{
     console.log(str);
 }
 

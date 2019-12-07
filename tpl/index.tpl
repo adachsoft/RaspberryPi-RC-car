@@ -14,10 +14,18 @@
     <script src="vendor/gafhyb/justgage/raphael-2.1.4.min.js"></script>
     <script src="vendor/gafhyb/justgage/justgage.js"></script>
     <script src="/node_modules/nipplejs/dist/nipplejs.js"></script>
+    {foreach from=$PLUGINS_JS_FILES item=PLUGIN}
+        <script src="{$PLUGIN}"></script>
+    {/foreach}
     <script src="js/MainRc.js?t={$TIME}"></script>
     <script>
+        var plugins = new Array();
+        {foreach from=$PLUGINS item=PLUGIN}
+            plugins.push( new {$PLUGIN}() );
+        {/foreach}
+
         var host = 'ws://{$HOST}:8000/websockets.php?t={$TIME}';
-        var rcCar = new MainRc(host);
+        var rcCar = new MainRc(host, plugins);
         
         function save(){
             $.ajax({
