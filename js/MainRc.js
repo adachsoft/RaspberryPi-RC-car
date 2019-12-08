@@ -12,7 +12,6 @@ class MainRc
         this.connect();
         this.initEvents();
         this.data = {
-            horn: false
         };
     }
     
@@ -205,7 +204,6 @@ class MainRc
         return {
             speed: speed,
             turn: turn,
-            horn: this.data.horn,
             plugins: pluginsData
         };
     }
@@ -235,7 +233,7 @@ class MainRc
             turn = 1 * $('#turn').val();
             bTurn = true;
         }
-        this.data.horn = this.arrKeys.indexOf(72) >= 0;
+        
         if(bSpeed){
             $('#current_speed').val(speed).trigger('change');
         }else{

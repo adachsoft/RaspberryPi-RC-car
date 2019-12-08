@@ -22,7 +22,6 @@ console.log('PWM B-1: ' + config.pwmB.pin[1]);
 console.log('Engine time out: ' + config.engineTimeOut);
 console.log('Controller: ' + config.controller);
 
-const sensor = require('ds18b20-raspi');
 const WebSocketServer = require('ws').Server;
 const temp = require("pi-temperature");
 const wss = new WebSocketServer({port: config.server.port});
@@ -30,11 +29,6 @@ const wss = new WebSocketServer({port: config.server.port});
 const raspi = require('raspi');
 
 var sendTime = null;
-var ds1820Temp = null;
-
-const Gpio = require('pigpio').Gpio;
-const horn = new Gpio(5, {mode: Gpio.OUTPUT});
-var hornTime = null;
 
 const Vehicle = require('./' + config.controller + '.js');
 var configVehicleFile = '../config/' + config.controller + '.json';
@@ -50,7 +44,6 @@ pluginManager.load();
 
 raspi.init(() => {
     console.log('INIT');
-    horn.digitalWrite(false);
     pluginManager.onInit();
   
     wss.on('connection', function (ws, req) {
@@ -61,9 +54,6 @@ raspi.init(() => {
             pluginManager.onMessage(data);
             vehicle.motor(data.speed);
             vehicle.turn(data.turn);
-            if( typeof data.horn !== 'undefined' ){
-                hornCtrl(data.horn);
-            }
             if( typeof data.cmd !== 'undefined' ){
                 if( data.cmd==='exit' ){
                     process.exit();
@@ -71,45 +61,16 @@ raspi.init(() => {
             }
             console.log('received: %s', message);
         });
-        ws.on('close', ()=>{
+        ws.on('close', (ws)=>{
             console.log('CLOSE');
             clearTimeout(sendTime);
             sendTime = null;
-            horn.digitalWrite(false);
+            pluginManager.onClose(ws);
         });
         //wsClient.push(ws);
         sendData(ws);
     });
 });
-
-
-
-
-function checkTemp(){
-    /*setTimeout(()=>{
-        sensor.readSimpleC((err, temp) => {
-            if (err) {
-                console.log(err);
-            } else {
-                console.log(`${temp} degC`);
-                ds1820Temp = temp;
-            }
-        });
-        checkTemp();
-    }, 5000);*/
-    
-    
-    //sensor.readSimpleC((err, temp) => {
-    sensor.readC('28-000001fad924', (err, temp) => {
-        if (err) {
-            console.log(err);
-        } else {
-            console.log(`${temp} degC`);
-            ds1820Temp = temp;
-        }
-        checkTemp();
-    });
-}
 
 function sendData(ws)
 {
@@ -124,7 +85,6 @@ function sendData(ws)
             if (!err) {
                 let data = {
                     temp: temp,
-                    ds1820: ds1820Temp,
                     plugins: pluginManager.onSend()
                 };
                 try{
@@ -147,16 +107,3 @@ function log(str)
     console.log(str);
 }
 
-function hornCtrl(hornOn){
-    horn.digitalWrite(hornOn);
-    if( hornOn ){
-        if( hornTime ){
-            clearTimeout(hornTime);
-            hornTime = null;
-        }
-        hornTime = setTimeout(()=>{
-            horn.digitalWrite(false);
-            hornTime = null;
-        }, config.engineTimeOut);
-    }
-}

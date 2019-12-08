@@ -42,7 +42,11 @@ module.exports = class PluginManager
     {
         this.plugins.forEach((plugin)=>{
             if (plugin.onMessage && typeof plugin.onMessage === "function") {
-                plugin.onMessage(ws, req);
+                try{
+                    plugin.onMessage(ws, req);
+                }catch(e){
+                    console.log(e);
+                }
             }
         });
     }
@@ -56,11 +60,24 @@ module.exports = class PluginManager
         });
     }
 
+    onClose(ws)
+    {
+        this.plugins.forEach((plugin)=>{
+            if (plugin.onClose && typeof plugin.onClose === "function") {
+                plugin.onClose(ws);
+            }
+        });
+    }
+
     onInit()
     {
         this.plugins.forEach((plugin)=>{
             if (plugin.onInit && typeof plugin.onInit === "function") {
-                plugin.onInit();
+                try{
+                    plugin.onInit();
+                }catch(e){
+                    console.log(e);
+                }
             }
         });
     }
