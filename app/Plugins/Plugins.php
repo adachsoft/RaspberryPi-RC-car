@@ -35,6 +35,11 @@ class Plugins
         return $this->getFilesIfExists('tpl_index');
     }
 
+    public function getTplFilesTab()
+    {
+        return $this->getFilesIfExists('tpl_tab');
+    }
+
     private function getFilesIfExists($type)
     {
         $plugins = array_keys($this->configData['plugins']);
@@ -55,6 +60,8 @@ class Plugins
         {
             case 'tpl_index':
                 return static::PATH_TO_PLUGINS . "{$plugin}/" . static::PATH_TO_TPL . "index" . static::TPL_EXT;
+            case 'tpl_tab':
+                return static::PATH_TO_PLUGINS . "{$plugin}/" . static::PATH_TO_TPL . "tab" . static::TPL_EXT;
             case 'js':
                 return static::PATH_TO_PLUGINS . "{$plugin}/" . static::PATH_TO_JS . "{$plugin}.js";
         }
