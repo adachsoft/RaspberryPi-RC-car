@@ -9,6 +9,8 @@ class WiFi
             this.tab = $('#tabWifiContainer');
             this.currentWiFiName = this.tab.find('#currentWiFiName');
             this.currentIpAddr = this.tab.find('#currentIpAddr');
+            this.tableScan = this.tab.find('#wifi_scan');
+            this.tableScanRow = this.tableScan.find('#wifi_scan_tpl');
         });
     }
 
@@ -19,14 +21,6 @@ class WiFi
     createDataToSend()
     {
         return null;
-
-        /*this.shouldSendData = false;
-
-        return {
-            WiFi: {
-                hornOn: this.hornOn
-            }
-        };*/
     }
 
     shouldSend()
@@ -46,9 +40,9 @@ class WiFi
     {
         try{
             let dataPlugin = this.getDataFromMessage(data);
-            console.log(dataPlugin);
             this.currentWiFiName.text(dataPlugin['wifi_ssid']);
             this.currentIpAddr.text(dataPlugin['ip_address']);
+            this.renderTable(dataPlugin['scan_result']);
         }catch(e){
             console.log(e);
         }
@@ -62,5 +56,22 @@ class WiFi
     getDataFromMessage(data)
     {
         return data['plugins']['WiFi'];
+    }
+
+    renderTable(data)
+    {
+        this.tableScan.find('.js-row').remove();
+        let num = 1;
+        let lastRow = this.tableScanRow;
+        data.forEach((item)=>{
+            let row = this.tableScanRow.clone();
+            row.removeClass('d-none').addClass('js-row');
+            row.find('td').each((idx, tdItem)=>{
+                $(tdItem).text(item[$(tdItem).data('row')]);
+            });
+            row.find('th').text(num++);
+            row.insertAfter(lastRow);
+            lastRow = row;
+        });
     }
 }

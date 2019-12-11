@@ -40,6 +40,32 @@ class Plugins
         return $this->getFilesIfExists('tpl_tab');
     }
 
+    public function getTabs()
+    {
+        $tabs = [];
+        foreach($this->getMetadata() as $plugin => $metadata){
+            if (isset($metadata['tabs'])){
+                foreach($metadata['tabs'] as $tab){
+                    $tab['file'] = static::PATH_TO_PLUGINS . "{$plugin}/" . static::PATH_TO_TPL . $tab['file'] . static::TPL_EXT;
+                    $tabs[] = $tab;
+                }
+            }
+        }
+
+        return $tabs;
+    }
+
+    public function getMetadata()
+    {
+        $allMetadata = [];
+        $files = $this->getFilesIfExists('metadata');
+        foreach($files as $plugin => $file){
+            $allMetadata[$plugin] = json_decode(file_get_contents($file), true);
+        }
+
+        return $allMetadata;
+    }
+
     private function getFilesIfExists($type)
     {
         $plugins = array_keys($this->configData['plugins']);
@@ -47,7 +73,7 @@ class Plugins
         foreach($plugins as $plugin){
             $file = $this->getFilePath($plugin, $type);
             if( file_exists($file) ){
-                $files[] = $file;
+                $files[$plugin] = $file;
             }
         }
 
@@ -64,6 +90,8 @@ class Plugins
                 return static::PATH_TO_PLUGINS . "{$plugin}/" . static::PATH_TO_TPL . "tab" . static::TPL_EXT;
             case 'js':
                 return static::PATH_TO_PLUGINS . "{$plugin}/" . static::PATH_TO_JS . "{$plugin}.js";
+            case 'metadata':
+                return static::PATH_TO_PLUGINS . "{$plugin}/plugin.json";
         }
     }
 }

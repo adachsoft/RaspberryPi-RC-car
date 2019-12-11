@@ -5,6 +5,7 @@ module.exports = class WiFi
         const Wifi = require('rpi-wifi-connection');
         this.wifi = new Wifi();
         this.currentWifi = {};
+        this.scanResult = {};
     }
 
     onInit()
@@ -12,6 +13,7 @@ module.exports = class WiFi
         setTimeout(
             ()=>{
                 this.getStatus();
+                this.scan();
             }, 
             500
         );
@@ -31,6 +33,7 @@ module.exports = class WiFi
         return {
                 wifi_ssid: this.currentWifi['ssid'],
                 ip_address: this.currentWifi['ip_address'],
+                scan_result: this.scanResult,
         };
     }
 
@@ -43,9 +46,9 @@ module.exports = class WiFi
         return data['plugins']['WiFi'];
     }
 
-    getStatus(){
+    getStatus()
+    {
         this.wifi.getStatus().then((status) => {
-            console.log(status);
             this.currentWifi['ssid'] = status.ssid;
             this.currentWifi['ip_address'] = status.ip_address;
             setTimeout(
@@ -53,6 +56,22 @@ module.exports = class WiFi
                     this.getStatus();
                 }, 
                 5000
+            );
+        })
+        .catch((error) => {
+            console.log(error);
+        });
+    }
+
+    scan()
+    {
+        this.wifi.scan().then((ssids) => {
+            this.scanResult = ssids;
+            setTimeout(
+                ()=>{
+                    this.scan();
+                }, 
+                2000
             );
         })
         .catch((error) => {
