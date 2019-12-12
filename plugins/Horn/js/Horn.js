@@ -29,7 +29,7 @@ class Horn
 
     onKeyUp(keys)
     {
-        if (this.isKeyPressed(keys, 72)) {
+        if (!this.isKeyPressed(keys, 72)) {
             this.hornOn = false;
             this.shouldSendData = true;
         }
