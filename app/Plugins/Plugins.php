@@ -20,6 +20,11 @@ class Plugins
         $this->configData = json_decode(file_get_contents(static::CONFIG_FILE), true);
     }
 
+    /*public function getAllPlugins()
+    {
+        
+    }*/
+
     public function getPlugins()
     {
         return array_keys($this->configData['plugins']);

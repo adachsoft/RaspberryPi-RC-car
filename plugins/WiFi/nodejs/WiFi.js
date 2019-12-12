@@ -26,6 +26,9 @@ module.exports = class WiFi
     onMessage(data)
     {
         data = this.getDataFromMessage(data);
+        if(data){
+            this.connect(data['ssid'], data['password']);
+        }
     }
 
     onSend()
@@ -43,7 +46,11 @@ module.exports = class WiFi
 
     getDataFromMessage(data)
     {
-        return data['plugins']['WiFi'];
+        if( data['plugins'] && data['WiFi'] ){
+            return data['plugins']['WiFi'];
+        }
+        
+        return null;
     }
 
     getStatus()
@@ -73,6 +80,16 @@ module.exports = class WiFi
                 }, 
                 2000
             );
+        })
+        .catch((error) => {
+            console.log(error);
+        });
+    }
+
+    connect(ssid, password)
+    {
+        this.wifi.connect({ssid: ssid, psk: password}).then(() => {
+            console.log('Connected to network: ', ssid);
         })
         .catch((error) => {
             console.log(error);
