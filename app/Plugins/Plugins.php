@@ -2,32 +2,59 @@
 
 namespace App\Plugins;
 
+use App\DataPersister\DataPersisterInterface;
+
 /**
 * Class 
 */
 class Plugins
 {
-    const CONFIG_FILE = 'config/configServer.json';
     const PATH_TO_JS = 'js/';
     const PATH_TO_PLUGINS = 'plugins/';
     const TPL_EXT = '.tpl';
     const PATH_TO_TPL = 'tpl/';
 
-    private $configData = [];
+    /**
+     * @var DataPersisterInterface
+     */
+    private $dataPersister;
+    
 
-    public function __construct()
+    public function __construct($dataPersister)
     {
-        $this->configData = json_decode(file_get_contents(static::CONFIG_FILE), true);
+        $this->dataPersister = $dataPersister;
+        $dataPersister->read();
     }
 
-    /*public function getAllPlugins()
+    public function getAllPlugins()
     {
-        
-    }*/
+        return $this->dataPersister->get();
+    }
+
+    public function set($plugin, $enable)
+    {
+        $idx = $this->getIndexPluginByName($plugin);
+
+        $plugins = $this->dataPersister->get();
+        $plugins[$idx] = ['name'=>$plugin, 'enable'=>$enable];
+        $this->dataPersister->set($plugins);
+    }
+
+    public function save()
+    {
+        $this->dataPersister->save();
+    }
 
     public function getPlugins()
     {
-        return array_keys($this->configData['plugins']);
+        $availablePlugins = [];
+        foreach($this->dataPersister->get() as $plugin){
+            if ($plugin['enable']) {
+                $availablePlugins[] = $plugin['name'];
+            }
+        }
+
+        return $availablePlugins;
     }
 
     public function getJsFiles()
@@ -73,7 +100,7 @@ class Plugins
 
     private function getFilesIfExists($type)
     {
-        $plugins = array_keys($this->configData['plugins']);
+        $plugins = $this->getPlugins();
         $files = [];
         foreach($plugins as $plugin){
             $file = $this->getFilePath($plugin, $type);
@@ -98,5 +125,16 @@ class Plugins
             case 'metadata':
                 return static::PATH_TO_PLUGINS . "{$plugin}/plugin.json";
         }
+    }
+
+    private function getIndexPluginByName($pluginName)
+    {
+        foreach($this->dataPersister->get() as $key => $plugin){
+            if($pluginName===$plugin['name']){
+                return $key;
+            }
+        }
+
+        return false;
     }
 }

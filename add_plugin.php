@@ -14,4 +14,14 @@ $config['plugins'][$pluginName] = [
     'name' => $pluginName,
 ];
 
-file_put_contents($configFile, json_encode($config));
+//file_put_contents($configFile, json_encode($config));
+
+$arr = [
+    ['name'=>'BlinkingLed', 'enable'=>true], 
+    ['name'=>'PoliceLights', 'enable'=>true], 
+    ['name'=>'Horn', 'enable'=>true], 
+    ['name'=>'DS1820', 'enable'=>true], 
+    ['name'=>'WiFi', 'enable'=>true],
+];
+
+echo json_encode($arr);

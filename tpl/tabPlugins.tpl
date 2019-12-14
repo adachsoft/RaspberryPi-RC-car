@@ -11,14 +11,18 @@
         </tr>
     </thead>
     <tbody>
-        {foreach from=$PLUGINS->getPlugins() item=PLUGIN key=KEY}
-        <tr id="wifi_scan_tpl" >
-            <th scope="row" data-row='num'>1</th>
-            <td>{$PLUGIN}</td>
-            <td>
-                <button class="btn btn-success">On/Off</button>
-            </td>
-        </tr>
+        {foreach from=$PLUGINS->getAllPlugins() item=PLUGIN key=KEY}
+            <tr id="wifi_scan_tpl" >
+                <th scope="row" data-row='num'>{$KEY + 1}</th>
+                <td>{$PLUGIN['name']}</td>
+                <td>
+                    {if $PLUGIN['enable']}
+                        <button class="btn btn-success js-btn" data-plugin="{$PLUGIN['name']}">Off</button>
+                    {else}
+                        <button class="btn btn-danger js-btn" data-plugin="{$PLUGIN['name']}">On</button>
+                    {/if}
+                </td>
+            </tr>
         {/foreach}
     </tbody>
 </table>

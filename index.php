@@ -1,13 +1,13 @@
 <?php
 
-use App\Plugins\Plugins;
+use App\Plugins\PluginsFactory;
 
 require_once 'init.php';
 
 $urlStream = $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['HTTP_HOST'] . ':8080/stream/video.mjpeg';
 $host = $_SERVER['HTTP_HOST'];
 
-$plugins = new Plugins();
+$plugins = PluginsFactory::create();
 
 $smarty = new Smarty();
 $smarty->setTemplateDir('tpl/');

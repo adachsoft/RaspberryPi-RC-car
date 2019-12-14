@@ -18,7 +18,9 @@
         <script src="{$PLUGIN}"></script>
     {/foreach}
     <script src="js/MainRc.js?t={$TIME}"></script>
+    <script src="js/PluginsTab.js?t={$TIME}"></script>
     <script>
+        var pluginsTab = new PluginsTab();
         var plugins = new Array();
         {foreach from=$PLUGINS_NAME item=PLUGIN}
             plugins.push( new {$PLUGIN}() );

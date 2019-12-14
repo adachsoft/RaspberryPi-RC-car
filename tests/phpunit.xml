@@ -14,6 +14,8 @@
             <file>App/Save.php</file>
             <file>App/Config/FileManagerTest.php</file>
             <file>App/Config/ConfigTest.php</file>
+            <file>App/Plugins/PluginsTest.php</file>
+            <file>App/DataPersister/FileManagerTest.php</file>
         </testsuite>
     </testsuites>
     <!--<filter>
