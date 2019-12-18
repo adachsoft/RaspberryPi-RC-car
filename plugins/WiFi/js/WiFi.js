@@ -53,9 +53,11 @@ class WiFi
     {
         try{
             let dataPlugin = this.getDataFromMessage(data);
-            this.currentWiFiName.text(dataPlugin['wifi_ssid']);
-            this.currentIpAddr.text(dataPlugin['ip_address']);
-            this.renderTable(dataPlugin['scan_result']);
+            if(dataPlugin){
+                this.currentWiFiName.text(dataPlugin['wifi_ssid']);
+                this.currentIpAddr.text(dataPlugin['ip_address']);
+                this.renderTable(dataPlugin['scan_result']);
+            }
         }catch(e){
             console.log(e);
         }
@@ -68,7 +70,11 @@ class WiFi
 
     getDataFromMessage(data)
     {
-        return data['plugins']['WiFi'];
+        if(data['plugins'] && data['plugins']['WiFi']){
+            return data['plugins']['WiFi'];
+        }
+
+        return null;
     }
 
     renderTable(data)

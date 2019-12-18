@@ -1,17 +1,18 @@
 {
-    "name": "html",
+    "name": "rc_car",
     "version": "1.0.0",
-    "description": "",
+    "description": "RC car software",
     "main": "index.js",
     "scripts": {
       "test": "echo \"Error: no test specified\" && exit 1"
     },
-    "author": "",
+    "author": "Arkadiusz Adach",
     "license": "ISC",
     "dependencies": {
       "ds18b20-raspi": "^0.3.3",
+      "gamepad": "^1.6.0",
       "nipplejs": "^0.8.0",
-      "node-wifi": "^2.0.5",
+      "node-wifi": "^2.0.12",
       "pi-temperature": "^2.0.0",
       "raspi": "^5.1.0",
       "raspi-soft-pwm": "^5.1.0",

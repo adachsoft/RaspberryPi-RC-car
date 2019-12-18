@@ -1,6 +1,6 @@
 
 <div class="m-2">
-    {assign var=ITEMS value=['server.port', 'engineTimeOut', 'controller']}
+    {assign var=ITEMS value=['server.port', 'engineTimeOut', 'controller', 'motorReverse', 'turnReverse']}
     {assign var=CONFIG_OBJ value=$CONFIG_SERVER}
     {assign var=CONFIG_NAME value='configServer'}
     {include file='config.tpl'}

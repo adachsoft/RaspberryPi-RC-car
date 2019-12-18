@@ -1,5 +1,5 @@
 <?php
 
 return [
-    'appVersion' => '0.4.94'
+    'appVersion' => '0.4.95'
 ];

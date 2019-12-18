@@ -5,6 +5,7 @@ module.exports = class RcCarManager
     constructor(pluginManager, webSocketServer, config, vehicle)
     {
         this.pluginManager = pluginManager;
+        this.pluginManager.setRcCarManager(this);
         this.webSocketServer = webSocketServer;
         this.config = config;
         this.vehicle = vehicle;
@@ -12,6 +13,8 @@ module.exports = class RcCarManager
         this.sendTime = null;
         this.temp = require("pi-temperature");
         this.cpuTemp = null;
+        this.speed = 0;
+        this.turn = 0;
     }
 
     init()
@@ -26,13 +29,12 @@ module.exports = class RcCarManager
     onConnect(ws, req)
     {
         this.log('New connection: ' + req.connection.remoteAddress);
-        //this.wsConnections.push(ws);
         this.pluginManager.onConnection(ws, req);
         ws.on('message', (message)=>{
             let data = JSON.parse(message);
             this.pluginManager.onMessage(data);
-            this.vehicle.motor(data.speed);
-            this.vehicle.turn(data.turn);
+            this.onChangeDrivingData(data.speed, data.turn);
+            
             /*if( typeof data.cmd !== 'undefined' ){
                 if( data.cmd==='exit' ){
                     process.exit();
@@ -53,6 +55,8 @@ module.exports = class RcCarManager
     {
         this.sendTime = setTimeout(()=>{
             let data = {
+                speed: this.speed,
+                turn: this.turn,
                 temp: this.cpuTemp,
                 plugins: this.pluginManager.onSend()
             };
@@ -90,7 +94,7 @@ module.exports = class RcCarManager
             }
             this.sendTime = null;
             this.sendData(ws);
-        }, 1000);
+        }, 100);
     }
 
     measureTemp()
@@ -103,6 +107,23 @@ module.exports = class RcCarManager
                 this.measureTemp();
             }, 1000);
         });
+    }
+
+    onChangeDrivingData(speed, turn)
+    {
+        if (this.config.motorReverse) {
+            speed = -1 * speed;
+        }
+        if (this.config.turnReverse) {
+            turn = -1 * turn;
+        }
+        console.log('onChangeDrivingData: ' + speed + " " + turn);
+
+        //this.vehicle.motor(speed);
+        //this.vehicle.turn(turn);
+
+        this.speed = this.config.motorReverse ? -1 * speed : speed;
+        this.turn = this.config.turnReverse ? -1 * turn : turn;
     }
 
     log(str)

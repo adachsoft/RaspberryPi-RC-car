@@ -19,16 +19,24 @@
     {/foreach}
     <script src="js/MainRc.js?t={$TIME}"></script>
     <script src="js/PluginsTab.js?t={$TIME}"></script>
+    <script src="js/PluginManager.js?t={$TIME}"></script>
+    <script src="js/Meters.js?t={$TIME}"></script>
+    <script src="js/Keyboard.js?t={$TIME}"></script>
     <script>
-        var pluginsTab = new PluginsTab();
+        const meters = new Meters();
+        const keyboard = new Keyboard();
+        const pluginsTab = new PluginsTab();
         var plugins = new Array();
         {foreach from=$PLUGINS_NAME item=PLUGIN}
             plugins.push( new {$PLUGIN}() );
         {/foreach}
 
-        var host = 'ws://{$HOST}:8000/websockets.php?t={$TIME}';
-        var rcCar = new MainRc(host, plugins);
+        const pluginManager = new PluginManager(plugins);
+        const host = 'ws://{$HOST}:8000/websockets.php?t={$TIME}';
+        const rcCar = new MainRc(host, pluginManager, meters);
         
+        keyboard.addEventListener(rcCar);
+
         function save(){
             $.ajax({
                 type: "POST",
@@ -41,7 +49,7 @@
                     }
                 },
             }).done((res)=>{
-                console.log('SAVE: ' + res);
+                
             });
         }
         
@@ -50,17 +58,15 @@
                 type: "POST",
                 url: 'snapshot.php',
             }).done((res)=>{
-                console.log('SAVE: ' + res);
+                
             });
         }
         
         $( document ).ready(()=> {
             $('#speed').on('change', ()=>{
-                console.log('change');
                 save();
             });
             $('#turn').on('change', ()=>{
-                console.log('change');
                 save();
             });
             $('#snapshot').on('click', ()=>{
@@ -98,10 +104,7 @@
             </div>
         </div>
     </div>
-    <div style="display: none;">
-        <div id="info"></div>
-        <div id="res"></div>
-    </div>
+    
     <hr class="m-0">
     
     {include file='tabs.tpl'}

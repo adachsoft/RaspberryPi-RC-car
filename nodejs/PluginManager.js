@@ -4,6 +4,7 @@ module.exports = class PluginManager
     {
         this.plugins = new Array();
         this.config = config;
+        this.rcCarManager = null;
     }
 
     load()
@@ -18,9 +19,33 @@ module.exports = class PluginManager
                 }catch(e){
                     console.log('Loading plugin error: ' + e.message);
                 }
-                
             }
         }
+    }
+
+    setRcCarManager(rcCarManager)
+    {
+        this.rcCarManager = rcCarManager;
+        this.setPluginManager();
+    }
+
+    setPluginManager()
+    {
+        this.plugins.forEach((plugin)=>{
+            if (plugin.setPluginManager && typeof plugin.setPluginManager === "function") {
+                try{
+                    plugin.setPluginManager(this);
+                }catch(e){
+                    console.log(e);
+                }
+            }
+        });
+    }
+
+    onChangeDrivingData(speed, turn)
+    {
+        console.log('ZZXC', speed);
+        this.rcCarManager.onChangeDrivingData(speed, turn);
     }
 
     onSend()

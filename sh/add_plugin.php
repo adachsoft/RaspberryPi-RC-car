@@ -17,10 +17,13 @@ $config['plugins']['DS1820'] = [
     'enable' => true,
     'name' => 'DS1820',
 ];*/
-
+/*
 $config['plugins']['WiFi'] = [
     'enable' => true,
     'name' => 'WiFi',
+];*/
+$config['plugins']['GamePad'] = [
+    'enable' => true,
+    'name' => 'GamePad',
 ];
-
 file_put_contents($configFile, json_encode($config));
