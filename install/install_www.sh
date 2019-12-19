@@ -1,7 +1,8 @@
 #!/bin/bash
 
+PHP=php7.3
 
-sudo apt-get install php7.0 php7.0-mbstring php7.0-xml -y
+sudo apt-get install $PHP $PHP-mbstring $PHP-xml -y
 sudo apt-get install apache2 -y
 sudo apt-get install libapache2-mpm-itk -y
 
