@@ -1,24 +1,21 @@
 
-class MainRc
+class MainRc extends Base
 {
     constructor(host, pluginManager, meters)
     {
+        super();
         this.host = host;
         this.pluginManager = pluginManager;
         this.meters = meters;
         this.arrKeys = [];
         this.data = {};
         this.socket = null;
-
-        this.connect();
-        this.init();
     }
     
     init()
     {
-        $(document).ready(()=> {
-            this.pluginManager.init();
-        });
+        this.pluginManager.init();
+        this.connect();
     }
     
     getMaxEnginePower()
@@ -134,7 +131,7 @@ class MainRc
         }
 
         try{
-            this.connectionStatus(3);
+            this.pluginManager.onConnecting();
 
             this.socket = new WebSocket(this.host);
             this.socket.onopen = (e) => {
@@ -157,7 +154,7 @@ class MainRc
     
     onSocketOpen()
     {
-        this.connectionStatus(1);
+        this.pluginManager.onOpen();
         this.sendData();
     }
 
@@ -167,10 +164,10 @@ class MainRc
 
     onSocketClose()
     {
-        this.connectionStatus(2);
+        this.pluginManager.onClose();
         setTimeout(()=>{
             this.connect();
-        }, 3000);
+        }, 10000);
     }
 
     onSocketMessage(data)
@@ -191,26 +188,6 @@ class MainRc
     isSocketClosed()
     {
         return null === this.socket || this.socket.readyState === WebSocket.CLOSED;
-    }
-
-    connectionStatus(status)
-    {
-        switch(status){
-            case 1: 
-                $('#infoSuccess').removeClass('badge-danger badge-warning').addClass('badge-success');
-                $('#infoSuccess').text('Connected');
-                $(document).trigger("rc_connected");
-                break;
-            case 2:
-                $('#infoSuccess').removeClass('badge-success badge-warning').addClass('badge-danger');
-                $('#infoSuccess').text('Disconnected');
-                $(document).trigger("rc_disconnected");
-                break;
-            case 3:
-                $('#infoSuccess').removeClass('badge-danger badge-success').addClass('badge-warning');
-                $('#infoSuccess').text('Connecting');
-                break;
-        }
     }
     
     onKeyDown(keyCode, keyboard)

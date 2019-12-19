@@ -1,13 +1,10 @@
-class Keyboard
+class Keyboard extends Base
 {
     constructor()
     {
+        super();
         this.arrKeys = [];
         this.listeners = [];
-
-        $(document).ready(()=> {
-            this.init();
-        });
     }
 
     init()

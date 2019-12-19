@@ -17,19 +17,22 @@
     {foreach from=$PLUGINS_JS_FILES item=PLUGIN}
         <script src="{$PLUGIN}"></script>
     {/foreach}
+    <script src="js/Base.js?t={$TIME}"></script>
     <script src="js/MainRc.js?t={$TIME}"></script>
     <script src="js/PluginsTab.js?t={$TIME}"></script>
     <script src="js/PluginManager.js?t={$TIME}"></script>
     <script src="js/Meters.js?t={$TIME}"></script>
     <script src="js/Keyboard.js?t={$TIME}"></script>
+    <script src="js/ConnectionStatus.js?t={$TIME}"></script>
     <script>
         const meters = new Meters();
         const keyboard = new Keyboard();
         const pluginsTab = new PluginsTab();
         var plugins = new Array();
         {foreach from=$PLUGINS_NAME item=PLUGIN}
-            plugins.push( new {$PLUGIN}() );
+            plugins.push(new {$PLUGIN}());
         {/foreach}
+        plugins.push(new ConnectionStatus());
 
         const pluginManager = new PluginManager(plugins);
         const host = 'ws://{$HOST}:8000/websockets.php?t={$TIME}';
@@ -83,7 +86,7 @@
     <div class="container">
         <div class="row">
             <div class="col-sm-1">
-                <span class="badge badge-pill badge badge-warning" id="infoSuccess">Connecting</span>
+                <span class="badge badge-pill badge badge-warning" id="connectionStatus">Connecting</span>
             </div>
             <div class="col-sm-3 input-group input-group-sm">
                 <div class="input-group-prepend">

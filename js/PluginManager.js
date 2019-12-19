@@ -39,6 +39,37 @@ class PluginManager
         return pluginsData;
     }
 
+    onConnecting()
+    {
+        this.plugins.forEach((plugin)=>{
+            if (plugin.onConnecting && typeof plugin.onConnecting === "function") {
+                try{
+                    plugin.onConnecting();
+                }catch(e){
+                    console.log(e);
+                }
+            }
+        });
+    }
+
+    onOpen()
+    {
+        this.plugins.forEach((plugin)=>{
+            if (plugin.onOpen && typeof plugin.onOpen === "function") {
+                plugin.onOpen();
+            }
+        });
+    }
+
+    onClose()
+    {
+        this.plugins.forEach((plugin)=>{
+            if (plugin.onClose && typeof plugin.onClose === "function") {
+                plugin.onClose();
+            }
+        });
+    }
+
     onMessage(data)
     {
         this.plugins.forEach((plugin)=>{
