@@ -9,4 +9,4 @@ if ! [ -x "$(command -v git)" ]; then
     sudo apt-get install git -y
 fi
 
-git clone git@github.com:adachsoft/RaspberryPi-RC-car.git /var/www/html
+git clone https://github.com/adachsoft/RaspberryPi-RC-car.git /var/www/html

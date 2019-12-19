@@ -2,8 +2,7 @@
 
 if [[ $(id -u) -ne 0 ]] ; then echo "Please run as root" ; exit 1 ; fi
 
-apt-get update
-apt-get install lsb-release git -y
+sudo apt-get install lsb-release
 
 #dev=`cat /proc/device-tree/model`
 model=$(tr -d '\0' < /proc/device-tree/model)
@@ -14,7 +13,7 @@ echo "MODEL= "$model
 
 if [[ $model =~ [^Raspberry\sPi\sZero]  ]]; then
 echo "Install nodejs for Raspberry Pi Zero";
-wget -O - https://raw.githubusercontent.com/sdesalas/node-pi-zero/master/instal$
+wget -O - https://raw.githubusercontent.com/sdesalas/node-pi-zero/master/install-node-v.last.sh | bash
 fi
 
 npm install -g npm
