@@ -1,7 +1,7 @@
 
 <h3>{$CONFIG_NAME}</h3>
 <form action="save.php" method="POST">
-    <input type="hidden" name="config_type" value="config" />
+    <input type="hidden" name="config_type" value="{$CONFIG_NAME}" />
     <input type="hidden" name="url" value="index.php" />
     {foreach from=$ITEMS item=$ITEM}
         <div class="input-group input-group-sm mb-1">

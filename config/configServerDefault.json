@@ -1,1 +1,1 @@
-{"pwmA":{"pin":["GPIO26","GPIO19"],"reverse":false},"pwmB":{"pin":["GPIO13","GPIO12"],"reverse":false},"server":{"port":8000},"engineTimeOut":200,"controller":"VehicleServoPWM"}
+{"motorReverse":false,"turnReverse":false,"server":{"port":8000},"engineTimeOut":200,"controller":"VehicleServoPWM","plugins":{"BlinkingLed":{"enable":true,"name":"Blinking led"}}}

@@ -6,14 +6,18 @@ class Config{
     private $file;
     private $data = [];
 
-    public function __construct($file) {
+    public function __construct($file, $path = './config/') 
+    {
         $this->file = $file;
+        $this->path = $path;
         $this->load();
     }
 
     public function save() : bool
     {
-        return file_put_contents("{$this->path}{$this->file}{$this->extension}", json_encode($this->data));
+        $filePath = "{$this->path}{$this->file}{$this->extension}";
+        return file_put_contents($filePath, json_encode($this->data)) && 
+                file_exists($filePath);
     }
     
     public function load(){

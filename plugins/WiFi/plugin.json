@@ -1,0 +1,10 @@
+{
+    "name": "WiFi",
+    "version": "1.0.0",
+    "tabs": {
+        "wifi": {
+            "label": "WiFi",
+            "file": "tab"
+        }
+    }
+}

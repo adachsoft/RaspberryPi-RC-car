@@ -1,150 +1,36 @@
-const process = require('process');
 const fs = require('fs');
-
-if (process.pid) {
-    console.log('This process is your pid ' + process.pid);
-    fs.writeFileSync('../tmp/rccar.lock', process.pid);
-}
+const PluginManager = require('./PluginManager.js');
+const RcCarManager = require('./RcCarManager.js');
 
 var configFile = '../config/configServer.json';
 if (!fs.existsSync(configFile)) {
     configFile = '../config/configServerDefault.json'
 }
 
-const config = require(configFile);
-console.log('Server port: ' + config.server.port);
-console.log('PWM A-0: ' + config.pwmA.pin[0]);
-console.log('PWM A-1: ' + config.pwmA.pin[1]);
-//console.log('PWM A reverse: ' + config.pwmA.reverse);
-console.log('PWM B-0: ' + config.pwmB.pin[0]);
-console.log('PWM B-1: ' + config.pwmB.pin[1]);
-//console.log('PWM B reverse: ' + config.pwmB.reverse);
-console.log('Engine time out: ' + config.engineTimeOut);
-console.log('Controller: ' + config.controller);
-
-const sensor = require('ds18b20-raspi');
-const WebSocketServer = require('ws').Server;
-const temp = require("pi-temperature");
-const wss = new WebSocketServer({port: config.server.port});
-
 const raspi = require('raspi');
-
-var sendTime = null;
-var ds1820Temp = null;
-
-const Gpio = require('pigpio').Gpio;
-const horn = new Gpio(5, {mode: Gpio.OUTPUT});
-var hornTime = null;
+const config = require(configFile);
+const pluginManager = new PluginManager(config);
+const WebSocketServer = require('ws').Server;
+const webSocketServer = new WebSocketServer({port: config.server.port});
 
 const Vehicle = require('./' + config.controller + '.js');
-var configVehicleFile = '../config/' + config.controller + '.json';
+let configVehicleFile = '../config/' + config.controller + '.json';
 if (!fs.existsSync(configVehicleFile)) {
     configVehicleFile = '../config/' + config.controller + 'Default.json'
 }
 const configVehicle = require(configVehicleFile);
 const vehicle = new Vehicle(configVehicle);
 
-//var wsClient = [];
+pluginManager.load();
+
+const rcCarManager = new RcCarManager(
+    pluginManager,
+    webSocketServer,
+    config,
+    vehicle
+);
+
 raspi.init(() => {
     console.log('INIT');
-    horn.digitalWrite(false);
-  
-    wss.on('connection', function (ws, req) {
-        log('New connection: ' + req.connection.remoteAddress);
-        ws.on('message', function (message) {
-            let data = JSON.parse(message);
-            vehicle.motor(data.speed);
-            vehicle.turn(data.turn);
-            if( typeof data.horn !== 'undefined' ){
-                hornCtrl(data.horn);
-            }
-            if( typeof data.cmd !== 'undefined' ){
-                if( data.cmd==='exit' ){
-                    process.exit();
-                }
-            }
-            console.log('received: %s', message);
-        });
-        ws.on('close', ()=>{
-            console.log('CLOSE');
-            clearTimeout(sendTime);
-            sendTime = null;
-            horn.digitalWrite(false);
-        });
-        //wsClient.push(ws);
-        sendData(ws);
-    });
+    rcCarManager.init();
 });
-
-//checkTemp();
-
-function checkTemp(){
-    /*setTimeout(()=>{
-        sensor.readSimpleC((err, temp) => {
-            if (err) {
-                console.log(err);
-            } else {
-                console.log(`${temp} degC`);
-                ds1820Temp = temp;
-            }
-        });
-        checkTemp();
-    }, 5000);*/
-    
-    
-    //sensor.readSimpleC((err, temp) => {
-    sensor.readC('28-000001fad924', (err, temp) => {
-        if (err) {
-            console.log(err);
-        } else {
-            console.log(`${temp} degC`);
-            ds1820Temp = temp;
-        }
-        checkTemp();
-    });
-}
-
-function sendData(ws){
-    if( sendTime!==null ){
-        return;
-    }
-    sendTime = setTimeout(()=>{
-        temp.measure(function(err, temp) {
-            log('Temp CPU: ' + temp);
-            if (!err) {
-                let data = {
-                    temp: temp,
-                    ds1820: ds1820Temp
-                };
-                try{
-                    ws.send(JSON.stringify(data), ()=>{
-                        sendData(ws);
-                    });
-                }catch (exception) {
-                    clearTimeout(sendTime);
-                    sendTime = null;
-                }
-            }
-            sendTime = null;
-            sendData(ws);  
-        });
-    }, 1000);
-}
-
-function log(str){
-    console.log(str);
-}
-
-function hornCtrl(hornOn){
-    horn.digitalWrite(hornOn);
-    if( hornOn ){
-        if( hornTime ){
-            clearTimeout(hornTime);
-            hornTime = null;
-        }
-        hornTime = setTimeout(()=>{
-            horn.digitalWrite(false);
-            hornTime = null;
-        }, config.engineTimeOut);
-    }
-}
