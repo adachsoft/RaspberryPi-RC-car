@@ -1,9 +1,11 @@
 <?php
 
-use App\Config\FileManager;
-
 require 'init.php';
 
+use App\InfoSystem;
 
-$fm = new FileManager('config');
-var_dump($fm);
+
+
+
+echo InfoSystem::getDeviceModel() . PHP_EOL;
+echo InfoSystem::getPHPVersion() . PHP_EOL;

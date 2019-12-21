@@ -1,7 +1,5 @@
 #!/bin/bash
 
-
-
 rm -R /var/www/html/
 mkdir /var/www/html
 cd /var/www/html
