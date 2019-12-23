@@ -12,9 +12,9 @@ if ! [ -x "$(command -v git)" ]; then
 fi
 
 sudo rm -R /var/www/html/
-mkdir /var/www/html
-cd /var/www/html
-chown -R pi:pi /var/www/html
+sudo mkdir /var/www/html
+sudo cd /var/www/html
+sudo chown -R pi:pi /var/www/html
 
 git clone https://github.com/adachsoft/RaspberryPi-RC-car.git /var/www/html
 
