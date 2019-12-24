@@ -26,7 +26,6 @@ module.exports = class WiFi
     onMessage(data)
     {
         data = this.getDataFromMessage(data);
-        console.log('DATA: ', data);
         if(data){
             this.connect(data['ssid'], data['password']);
         }

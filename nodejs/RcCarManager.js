@@ -111,6 +111,8 @@ module.exports = class RcCarManager
 
     onChangeDrivingData(speed, turn)
     {
+        console.log(this.config.motorReverse, speed);
+
         if (this.config.motorReverse) {
             speed = -1 * speed;
         }
