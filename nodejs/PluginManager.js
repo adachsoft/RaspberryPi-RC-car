@@ -62,7 +62,6 @@ module.exports = class PluginManager
 
     onChangeDrivingData(speed, turn)
     {
-        console.log('ZZXC', speed);
         this.rcCarManager.onChangeDrivingData(speed, turn);
     }
 
@@ -118,6 +117,19 @@ module.exports = class PluginManager
             if (plugin.onInit && typeof plugin.onInit === "function") {
                 try{
                     plugin.onInit();
+                }catch(e){
+                    console.log(e);
+                }
+            }
+        });
+    }
+
+    onExit()
+    {
+        this.plugins.forEach((plugin)=>{
+            if (plugin.onExit && typeof plugin.onExit === "function") {
+                try{
+                    plugin.onExit();
                 }catch(e){
                     console.log(e);
                 }

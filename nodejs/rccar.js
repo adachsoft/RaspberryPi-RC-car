@@ -1,3 +1,4 @@
+const process = require('process');
 const raspi = require('raspi');
 const PluginManager = require('./PluginManager.js');
 const RcCarManager = require('./RcCarManager.js');
@@ -28,4 +29,10 @@ const rcCarManager = new RcCarManager(
 raspi.init(() => {
     console.log('INIT');
     rcCarManager.init();
+});
+
+process.on('SIGINT', () => {
+    console.log('EXIT');
+    pluginManager.onExit();
+    process.exit(0);
 });

@@ -12,7 +12,9 @@ module.exports = class RcCarManager
         this.debugOn = true;
         this.sendTime = null;
         this.temp = require("pi-temperature");
+        this.osu = require('node-os-utils');
         this.cpuTemp = null;
+        this.cpuPercentage = null;
         this.speed = 0;
         this.turn = 0;
     }
@@ -23,6 +25,7 @@ module.exports = class RcCarManager
         this.pluginManager.onInit();
         setTimeout(()=>{
             this.measureTemp();
+            this.measureCpuPercentage();
         }, 500);
     }
 
@@ -58,6 +61,7 @@ module.exports = class RcCarManager
                 speed: this.speed,
                 turn: this.turn,
                 temp: this.cpuTemp,
+                cpu: this.cpuPercentage,
                 plugins: this.pluginManager.onSend()
             };
             let jsonData = JSON.stringify(data);
@@ -74,7 +78,7 @@ module.exports = class RcCarManager
         }, 1000);
     }
 
-    sendData(ws)
+    /*sendData(ws)
     {
         if (this.sendTime!==null) {
             return;
@@ -82,8 +86,10 @@ module.exports = class RcCarManager
         this.sendTime = setTimeout(()=>{
             let data = {
                 temp: this.cpuTemp,
+                cpu: this.cpuPercentage,
                 plugins: this.pluginManager.onSend()
             };
+            console.log(this.cpuPercentage);
             try{
                 ws.send(JSON.stringify(data), ()=>{
                     this.sendData(ws);
@@ -95,7 +101,7 @@ module.exports = class RcCarManager
             this.sendTime = null;
             this.sendData(ws);
         }, 100);
-    }
+    }*/
 
     measureTemp()
     {
@@ -109,10 +115,20 @@ module.exports = class RcCarManager
         });
     }
 
+    measureCpuPercentage()
+    {
+        let cpu = this.osu.cpu
+        cpu.usage().then(cpuPercentage => {
+            //console.log(cpuPercentage);
+            this.cpuPercentage = cpuPercentage;
+            setTimeout(()=>{
+                this.measureCpuPercentage();
+            }, 1000);
+        });
+    }
+
     onChangeDrivingData(speed, turn)
     {
-        console.log(this.config.motorReverse, speed);
-
         if (this.config.motorReverse) {
             speed = -1 * speed;
         }
