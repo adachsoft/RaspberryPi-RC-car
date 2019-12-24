@@ -4,8 +4,11 @@ use App\Plugins\PluginsFactory;
 
 require_once 'init.php';
 
-$urlStream = $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['HTTP_HOST'] . ':8080/stream/video.mjpeg';
+$urlToSelf = $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['HTTP_HOST'];
+$urlStream = $urlToSelf . ':8080/stream/video.mjpeg';
 $host = $_SERVER['HTTP_HOST'];
+
+$urlStream = $urlToSelf . ':8080/?action=stream';
 
 $plugins = PluginsFactory::create();
 

@@ -1,24 +1,19 @@
-const fs = require('fs');
+const raspi = require('raspi');
 const PluginManager = require('./PluginManager.js');
 const RcCarManager = require('./RcCarManager.js');
+const ConfigLoader = require('./ConfigLoader.js');
 
-var configFile = '../config/configServer.json';
-if (!fs.existsSync(configFile)) {
-    configFile = '../config/configServerDefault.json'
-}
+const configLoader = new ConfigLoader();
+const config = configLoader.load('configServer');
+const configPlugins = configLoader.load('plugins');
+console.log(configPlugins);
 
-const raspi = require('raspi');
-const config = require(configFile);
-const pluginManager = new PluginManager(config);
+const pluginManager = new PluginManager(configPlugins);
 const WebSocketServer = require('ws').Server;
 const webSocketServer = new WebSocketServer({port: config.server.port});
 
 const Vehicle = require('./' + config.controller + '.js');
-let configVehicleFile = '../config/' + config.controller + '.json';
-if (!fs.existsSync(configVehicleFile)) {
-    configVehicleFile = '../config/' + config.controller + 'Default.json'
-}
-const configVehicle = require(configVehicleFile);
+const configVehicle = configLoader.load(config.controller);
 const vehicle = new Vehicle(configVehicle);
 
 pluginManager.load();

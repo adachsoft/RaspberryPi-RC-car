@@ -1,13 +1,12 @@
 <div class="containerCtrl">
     {if $CONFIG->get('camera')}
-    <img src="{$URL_STREAM}" class="stream" />
+    <img src="{$URL_STREAM}" class="stream" id="img_stream" />
     {/if}
     <div class="meters">
         <div id="meterEnginePower" class="gauge" data-value="0"></div>
         <div id="meterTurnStrength" class="gauge" data-value="0"></div>
         <div id="meterTemp" class="gauge" data-value="0"></div>   
     </div>
-
 </div>
 
 <div style="display: none;">

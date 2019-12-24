@@ -40,7 +40,8 @@
         
         keyboard.addEventListener(rcCar);
 
-        function save(){
+        function save()
+        {
             $.ajax({
                 type: "POST",
                 url: 'save.php',
@@ -56,7 +57,8 @@
             });
         }
         
-        function snapshot(){
+        function snapshot()
+        {
             $.ajax({
                 type: "POST",
                 url: 'snapshot.php',

@@ -40,7 +40,7 @@ module.exports = class RcCarManager
                     process.exit();
                 }
             }*/
-            console.log('received: %s', message);
+            //console.log('received: %s', message);
         });
         ws.on('close', (ws)=>{
             this.log('CLOSE');
@@ -111,16 +111,20 @@ module.exports = class RcCarManager
 
     onChangeDrivingData(speed, turn)
     {
+        console.log(this.config.motorReverse, speed);
+
         if (this.config.motorReverse) {
             speed = -1 * speed;
         }
         if (this.config.turnReverse) {
             turn = -1 * turn;
         }
-        console.log('onChangeDrivingData: ' + speed + " " + turn);
-
-        //this.vehicle.motor(speed);
-        //this.vehicle.turn(turn);
+        try{
+            this.vehicle.turn(turn);
+            this.vehicle.motor(speed);
+        } catch (e) {
+            console.log(e);
+        }
 
         this.speed = this.config.motorReverse ? -1 * speed : speed;
         this.turn = this.config.turnReverse ? -1 * turn : turn;

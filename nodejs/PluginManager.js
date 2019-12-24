@@ -9,6 +9,23 @@ module.exports = class PluginManager
 
     load()
     {
+        for (const [key, value] of Object.entries(this.config)) {
+            if( value.enable ){
+                let pluginToLoad = value.name;
+                console.log('Load plugin: ' + pluginToLoad);
+                try{
+                    let Plugin = require( '../plugins/' + pluginToLoad + '/nodejs/' + pluginToLoad + '.js');
+                    let pluginObj = new Plugin();
+                    this.plugins.push(pluginObj);
+                }catch(e){
+                    console.log('Loading plugin error: ' + e.message);
+                }
+            }
+        }
+    }
+
+    /*load2()
+    {
         for (const [key, value] of Object.entries(this.config.plugins)) {
             if( value.enable ){
                 console.log('Load plugin: ' + key);
@@ -21,7 +38,8 @@ module.exports = class PluginManager
                 }
             }
         }
-    }
+    }*/
+
 
     setRcCarManager(rcCarManager)
     {
