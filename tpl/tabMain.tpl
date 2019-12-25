@@ -1,4 +1,7 @@
 <div class="containerCtrl">
+    <div class="hud">
+        <span class="" id="cpu">CPU: <span class="js-value">0%<span></span>
+    </div>
     {if $CONFIG->get('camera')}
     <img src="{$URL_STREAM}" class="stream" id="img_stream" data-stream="{$URL_STREAM}" />
     {/if}

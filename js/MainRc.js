@@ -178,6 +178,9 @@ class MainRc extends Base
         if (typeof data.temp !== 'undefined') {
             this.meters.meterTempRefresh(data.temp);
         }
+        if (typeof data.cpu !== 'undefined') {
+            $('#cpu .js-value').text(data.cpu + '%');
+        }
     }
 
     isSocketConnected()

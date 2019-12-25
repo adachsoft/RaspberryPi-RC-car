@@ -78,31 +78,6 @@ module.exports = class RcCarManager
         }, 1000);
     }
 
-    /*sendData(ws)
-    {
-        if (this.sendTime!==null) {
-            return;
-        }
-        this.sendTime = setTimeout(()=>{
-            let data = {
-                temp: this.cpuTemp,
-                cpu: this.cpuPercentage,
-                plugins: this.pluginManager.onSend()
-            };
-            console.log(this.cpuPercentage);
-            try{
-                ws.send(JSON.stringify(data), ()=>{
-                    this.sendData(ws);
-                });
-            }catch (exception) {
-                clearTimeout(this.sendTime);
-                this.sendTime = null;
-            }
-            this.sendTime = null;
-            this.sendData(ws);
-        }, 100);
-    }*/
-
     measureTemp()
     {
         this.temp.measure((err, temp)=>{
@@ -119,7 +94,6 @@ module.exports = class RcCarManager
     {
         let cpu = this.osu.cpu
         cpu.usage().then(cpuPercentage => {
-            //console.log(cpuPercentage);
             this.cpuPercentage = cpuPercentage;
             setTimeout(()=>{
                 this.measureCpuPercentage();
@@ -144,6 +118,11 @@ module.exports = class RcCarManager
 
         this.speed = this.config.motorReverse ? -1 * speed : speed;
         this.turn = this.config.turnReverse ? -1 * turn : turn;
+    }
+
+    onExit()
+    {
+        this.pluginManager.onExit();
     }
 
     log(str)

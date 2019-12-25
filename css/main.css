@@ -4,7 +4,6 @@ html, body {
 }
 #con {
     position: fixed;
-    /*top: 0;*/
     left: 0;
     right: 0;
     bottom: 0;
@@ -32,14 +31,15 @@ html, body {
 
 .container {
     width: 640px;
+    height: 50px;
     margin: 3px auto;
     text-align: center;
     position: relative;
 }
 
 .containerCtrl {
-    width: 640px;
-    height: 480px;
+    width: calc(100vw - 20px);
+    height: calc(100vh - 120px);
     margin: 3px auto;
     text-align: center;
     position: relative;
@@ -54,7 +54,6 @@ html, body {
 
 .btnController{
     position: absolute;
-    /*background-color: red;*/
     width: 200px;
     height: 200px;
     top: calc(50% - 100px);
@@ -100,17 +99,23 @@ html, body {
 }
 
 .meters{
-    /*background-color: rgba(255, 0, 100, 0.2);*/
     position: absolute;
     bottom: 0px;
     left: 0px;
     right: 0px;
 }
 
+.hud{
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    right: 0px;
+    color: wheat;
+    background: rgba(180, 180, 180, 0.1);
+}
+
 .stream{
     max-width: 80vw;
-    /*width: calc(640px * 0.8);
-    height: calc(480px * 0.8);*/
     width: 100%;
     height: 100%;   
 }

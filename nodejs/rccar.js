@@ -1,5 +1,12 @@
+const fs = require('fs');
 const process = require('process');
 const raspi = require('raspi');
+
+if (process.pid) {
+    console.log('PID: ' + process.pid);
+    fs.writeFileSync('../tmp/rccar.lock', process.pid);
+}
+
 const PluginManager = require('./PluginManager.js');
 const RcCarManager = require('./RcCarManager.js');
 const ConfigLoader = require('./ConfigLoader.js');
@@ -7,7 +14,6 @@ const ConfigLoader = require('./ConfigLoader.js');
 const configLoader = new ConfigLoader();
 const config = configLoader.load('configServer');
 const configPlugins = configLoader.load('plugins');
-console.log(configPlugins);
 
 const pluginManager = new PluginManager(configPlugins);
 const WebSocketServer = require('ws').Server;
@@ -33,6 +39,7 @@ raspi.init(() => {
 
 process.on('SIGINT', () => {
     console.log('EXIT');
-    pluginManager.onExit();
+    rcCarManager.onExit();
+    fs.unlinkSync('../tmp/rccar.lock');
     process.exit(0);
 });
