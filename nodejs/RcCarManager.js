@@ -2,19 +2,16 @@ const WebSocket = require('ws');
 
 module.exports = class RcCarManager
 {
-    constructor(pluginManager, webSocketServer, config, vehicle)
+    constructor(pluginManager, webSocketServer, config, vehicle, deviceManager)
     {
         this.pluginManager = pluginManager;
         this.pluginManager.setRcCarManager(this);
         this.webSocketServer = webSocketServer;
         this.config = config;
         this.vehicle = vehicle;
+        this.deviceManager = deviceManager;
         this.debugOn = true;
         this.sendTime = null;
-        this.temp = require("pi-temperature");
-        this.osu = require('node-os-utils');
-        this.cpuTemp = null;
-        this.cpuPercentage = null;
         this.speed = 0;
         this.turn = 0;
     }
@@ -23,10 +20,7 @@ module.exports = class RcCarManager
     {
         this.webSocketServer.on('connection', (ws, req)=>{this.onConnect(ws, req);});
         this.pluginManager.onInit();
-        setTimeout(()=>{
-            this.measureTemp();
-            this.measureCpuPercentage();
-        }, 500);
+        this.deviceManager.onInit();
     }
 
     onConnect(ws, req)
@@ -60,8 +54,7 @@ module.exports = class RcCarManager
             let data = {
                 speed: this.speed,
                 turn: this.turn,
-                temp: this.cpuTemp,
-                cpu: this.cpuPercentage,
+                deviceState: this.deviceManager.getData(),
                 plugins: this.pluginManager.onSend()
             };
             let jsonData = JSON.stringify(data);
@@ -76,29 +69,6 @@ module.exports = class RcCarManager
             });
             this.sendToAll();
         }, 1000);
-    }
-
-    measureTemp()
-    {
-        this.temp.measure((err, temp)=>{
-            if (!err) {
-                this.cpuTemp = temp;
-            }
-            setTimeout(()=>{
-                this.measureTemp();
-            }, 1000);
-        });
-    }
-
-    measureCpuPercentage()
-    {
-        let cpu = this.osu.cpu
-        cpu.usage().then(cpuPercentage => {
-            this.cpuPercentage = cpuPercentage;
-            setTimeout(()=>{
-                this.measureCpuPercentage();
-            }, 1000);
-        });
     }
 
     onChangeDrivingData(speed, turn)

@@ -10,7 +10,9 @@ if (process.pid) {
 const PluginManager = require('./PluginManager.js');
 const RcCarManager = require('./RcCarManager.js');
 const ConfigLoader = require('./ConfigLoader.js');
+const DeviceManager = require('./DeviceManager.js');
 
+const deviceManager = new DeviceManager();
 const configLoader = new ConfigLoader();
 const config = configLoader.load('configServer');
 const configPlugins = configLoader.load('plugins');
@@ -29,7 +31,8 @@ const rcCarManager = new RcCarManager(
     pluginManager,
     webSocketServer,
     config,
-    vehicle
+    vehicle,
+    deviceManager
 );
 
 raspi.init(() => {
