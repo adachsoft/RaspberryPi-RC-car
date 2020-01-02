@@ -1,0 +1,1 @@
+<img src="{$URL_STREAM}" class="stream" id="img_stream" data-stream="{$URL_STREAM}" />

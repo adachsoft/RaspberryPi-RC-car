@@ -3,7 +3,7 @@
         <span class="" id="cpu">CPU: <span class="js-value">0%<span></span>
     </div>
     {if $CONFIG->get('camera')}
-    <img src="{$URL_STREAM}" class="stream" id="img_stream" data-stream="{$URL_STREAM}" />
+    {include file=$CAMERA_TPL}
     {/if}
     <div class="meters">
         <div id="meterEnginePower" class="gauge" data-value="0"></div>

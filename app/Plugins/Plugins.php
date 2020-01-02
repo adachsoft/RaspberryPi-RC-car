@@ -10,6 +10,7 @@ use App\DataPersister\DataPersisterInterface;
 class Plugins
 {
     const PATH_TO_JS = 'js/';
+    const PATH_TO_CSS = 'css/';
     const PATH_TO_PLUGINS = 'plugins/';
     const TPL_EXT = '.tpl';
     const PATH_TO_TPL = 'tpl/';
@@ -93,6 +94,11 @@ class Plugins
         return $this->getFilesIfExists('js');
     }
 
+    public function getCssFiles()
+    {
+        return $this->getFilesIfExists('css');
+    }
+
     public function getTplFilesIndex()
     {
         return $this->getFilesIfExists('tpl_index');
@@ -153,6 +159,8 @@ class Plugins
                 return static::PATH_TO_PLUGINS . "{$plugin}/" . static::PATH_TO_TPL . "tab" . static::TPL_EXT;
             case 'js':
                 return static::PATH_TO_PLUGINS . "{$plugin}/" . static::PATH_TO_JS . "{$plugin}.js";
+            case 'css':
+                return static::PATH_TO_PLUGINS . "{$plugin}/" . static::PATH_TO_CSS . "{$plugin}.css";
             case 'metadata':
                 return static::PATH_TO_PLUGINS . "{$plugin}/plugin.json";
             case 'php_main_class':

@@ -18,11 +18,14 @@ $dataForTpl = [
     'URL_STREAM' => $urlStream,
     'CONFIG' => $config,
     'PLUGINS_JS_FILES' => $plugins->getJsFiles(),
+    'PLUGINS_CSS_FILES' => $plugins->getCssFiles(),
     'PLUGINS_NAME' => $plugins->getPlugins(),
     'PLUGINS' => $plugins,
     'CONFIG_SERVER' => new Config('configServer'),
     'CONFIG_VEHICLEL298N' => new Config('VehicleL298n'),
     'CONFIG_VEHICLEL_SERVO_PWM' => new Config('VehicleServoPWM'),
+    'CAMERA_TPL' => 'camera.tpl',
+    'JS_FILES' => [],
 ];
 
 $dataForTpl = $plugins->beforeRenderIndex($dataForTpl);

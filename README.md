@@ -12,3 +12,9 @@ https://github.com/cncjs/cncjs/wiki/Setup-Guide:-Raspberry-Pi-%7C-MJPEG-Streamer
 
 over_voltage=4
 force_turbo=1
+
+## 
+
+Add line in "/etc/rc.local"
+
+/var/www/html/sh/server_start.sh &
