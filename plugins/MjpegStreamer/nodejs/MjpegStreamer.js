@@ -2,7 +2,6 @@ module.exports = class MjpegStreamer
 {
     constructor()
     {
-        console.log('MjpegStreamer');
         this.mjpegStreamer = null;
     }
 
@@ -16,19 +15,31 @@ module.exports = class MjpegStreamer
         });
 
         this.mjpegStreamer.stderr.on('data', (data) => {
-            console.error(`stderr: ${data}`);
+            if (this.isSuccess(data)) {
+                console.error('Success run mjpeg-streamer');
+            } else {
+                console.error(`stderr: ${data}`);
+            }
         });
 
         this.mjpegStreamer.on('close', (code) => {
             console.log(`child process exited with code ${code}`);
         });
     }
-
+   
     onExit()
     {
         console.log('Kill: mjpeg-streamer');
         if (!this.mjpegStreamer.kill('SIGTERM')) {
             console.log('Error kill mjpeg-streamer');
         }
+    }
+
+    isSuccess(data)
+    {
+        //o: HTTP TCP port........: 8080
+        let regex = RegExp("HTTP\\sTCP\\sport", 'm');
+
+        return regex.test(data);
     }
 }

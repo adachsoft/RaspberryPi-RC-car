@@ -1,2 +1,4 @@
 node_modules/*
+http-live-player.js
+dist/*
 

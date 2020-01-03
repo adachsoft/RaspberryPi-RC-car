@@ -1,1 +1,1 @@
-[{"name":"BlinkingLed","enable":true},{"name":"PoliceLights","enable":false},{"name":"Horn","enable":false},{"name":"DS1820","enable":false},{"name":"WiFi","enable":true},{"name":"MjpegStreamer","enable":true},{"name":"H264LivePlayer","enable":false}]
+[{"name":"BlinkingLed","enable":true},{"name":"PoliceLights","enable":false},{"name":"Horn","enable":false},{"name":"DS1820","enable":false},{"name":"WiFi","enable":true},{"name":"MjpegStreamer","enable":true},{"name":"H264LivePlayer","enable":false},{"name":"UdpBroadcast","enable":true}]

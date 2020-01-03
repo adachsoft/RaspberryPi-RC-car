@@ -24,23 +24,6 @@ module.exports = class PluginManager
         }
     }
 
-    /*load2()
-    {
-        for (const [key, value] of Object.entries(this.config.plugins)) {
-            if( value.enable ){
-                console.log('Load plugin: ' + key);
-                try{
-                    let Plugin = require( '../plugins/' + key + '/nodejs/' + key + '.js');
-                    let pluginObj = new Plugin();
-                    this.plugins.push(pluginObj);
-                }catch(e){
-                    console.log('Loading plugin error: ' + e.message);
-                }
-            }
-        }
-    }*/
-
-
     setRcCarManager(rcCarManager)
     {
         this.rcCarManager = rcCarManager;
