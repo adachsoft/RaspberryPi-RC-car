@@ -9,7 +9,7 @@
     <link href="vendor/twbs/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
     <link href="vendor/components/font-awesome/css/fontawesome-all.min.css" rel="stylesheet" type="text/css" />
     {foreach from=$PLUGINS_CSS_FILES item=PLUGIN}
-        <script src="{$PLUGIN}"></script>
+        <link href="{$PLUGIN}" rel="stylesheet" type="text/css" />
     {/foreach}
     
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>

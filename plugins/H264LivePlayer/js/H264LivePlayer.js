@@ -1,9 +1,6 @@
 class H264LivePlayer
 {
-    constructor()
-    {
-
-    }
+    
 
     init()
     {
