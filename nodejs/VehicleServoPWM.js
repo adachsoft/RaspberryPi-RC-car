@@ -1,14 +1,12 @@
-/* 
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 const pwm = require('raspi-soft-pwm');
 const Gpio = require('pigpio').Gpio;
+const Vehicle = require('./Vehicle.js');
 
-module.exports = class VehicleServoPWM{
-    constructor(dataInit) {
+module.exports = class VehicleServoPWM extends Vehicle
+{
+    constructor(dataInit) 
+    {
+        super();
         this.pwmMotor0 = new pwm.SoftPWM(dataInit.pinMotor0);
         this.pwmMotor1 = new pwm.SoftPWM(dataInit.pinMotor1);
         this.timeOut = dataInit.timeOut;
@@ -28,23 +26,20 @@ module.exports = class VehicleServoPWM{
             this.turnTime = null;
         }
         this.turnTime = setTimeout(()=>{
-            //console.log('STOP turn: ' + servoVal);
-            /*let servoVal = this.servoMin + (this.servoMax - this.servoMin)/2;
-            console.log('STOP turn: ' + servoVal);
-            this.servo.servoWrite( servoVal );*/
             this.turnReset();
             this.turnTime = null;
+            this.onTurnStop();
         }, this.timeOut);
     }
     
-    turnReset(){
+    turnReset()
+    {
         let servoVal = this.servoMin + (this.servoMax - this.servoMin)/2;
-        console.log('STOP turn: ' + servoVal);
         this.servo.servoWrite( servoVal );
     }
     
-    motor(val){
-        console.log('START MOTOR: ' + val);
+    motor(val)
+    {
         val = (parseInt(val) / 100);
         this.pwmVal(this.pwmMotor0, this.pwmMotor1, val);
         if( this.motorTime ){
@@ -52,15 +47,16 @@ module.exports = class VehicleServoPWM{
            this.motorTime = null;
         }
         this.motorTime = setTimeout(()=>{
-            console.log('STOP MOTOR: ' + val);
             this.pwmMotor0.write(0.0);
             this.pwmMotor1.write(0.0);
             this.motorTime = null;
+            this.onMotorStop();
         }, this.timeOut);
     }
 
-    pwmVal(pwm0, pwm1, val){
-        if( val >= 0 ){
+    pwmVal(pwm0, pwm1, val)
+    {
+        if (val >= 0) {
             pwm0.write(0);
             pwm1.write(val);
         }else{

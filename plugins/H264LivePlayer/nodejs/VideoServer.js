@@ -8,12 +8,9 @@ module.exports = class VideoServer
 {
     constructor(server, raspivid)
     {
+        this.server = server;
         this.raspivid = raspivid;
-        this.wss = new WebSocketServer(server);
-        
-        this.wss.on('connection', (ws, req)=>{
-            this.onConnect(ws, req);
-        });
+        this.wss = null;
     }
     
     startStream() 
@@ -74,6 +71,21 @@ module.exports = class VideoServer
             //this.readStream.end();
             this.raspivid.close();
             console.log('stopping client interval');
+        });
+    }
+
+    open()
+    {
+        this.wss = new WebSocketServer(this.server);
+        this.wss.on('connection', (ws, req)=>{
+            this.onConnect(ws, req);
+        });
+    }
+
+    close()
+    {
+        this.wss.close(()=>{
+            console.log('disconnect');
         });
     }
 }

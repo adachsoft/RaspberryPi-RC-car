@@ -44,7 +44,7 @@ module.exports = class PoliceLights
     {
         try{
             data = this.getDataFromMessage(data);
-            this.ledOn = data.ledOn===1
+            this.ledOn = data.ledOn === 1;
             if (!this.ledOn) {
                 this.gpiop.write(this.ledPin0, 0);
                 this.gpiop.write(this.ledPin1, 0);

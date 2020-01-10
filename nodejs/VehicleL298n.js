@@ -1,8 +1,11 @@
 const pwm = require('raspi-soft-pwm');
+const Vehicle = require('./Vehicle.js');
 
-module.exports = class VehicleL298n
+module.exports = class VehicleL298n extends Vehicle
 {
-    constructor(dataInit) {
+    constructor(dataInit) 
+    {
+        super();
         this.pwmMotor0 = new pwm.SoftPWM(dataInit.pinMotor0);
         this.pwmMotor1 = new pwm.SoftPWM(dataInit.pinMotor1);
         this.pwmTurn0 = new pwm.SoftPWM(dataInit.pinTurn0);
@@ -11,7 +14,7 @@ module.exports = class VehicleL298n
         this.motorTime = null;
         this.turnTime = null;
     }
-    
+
     turn(val)
     {
         val = val / 100;
@@ -24,6 +27,7 @@ module.exports = class VehicleL298n
             this.pwmTurn0.write(0.0);
             this.pwmTurn1.write(0.0);
             this.turnTime = null;
+            this.onTurnStop();
         }, this.timeOut);
     }
 
@@ -39,6 +43,7 @@ module.exports = class VehicleL298n
             this.pwmMotor0.write(0.0);
             this.pwmMotor1.write(0.0);
             this.motorTime = null;
+            this.onMotorStop();
         }, this.timeOut);
     }
 

@@ -14,6 +14,12 @@ module.exports = class RcCarManager
         this.sendTime = null;
         this.speed = 0;
         this.turn = 0;
+        this.vehicle.setOnMotorStop(()=>{
+            this.onMotorStop();
+        });
+        this.vehicle.setOnTurnStop(()=>{
+            this.onTurnStop();
+        });
     }
 
     init()
@@ -68,7 +74,7 @@ module.exports = class RcCarManager
                 }
             });
             this.sendToAll();
-        }, 1000);
+        }, 500);
     }
 
     onChangeDrivingData(speed, turn)
@@ -88,6 +94,16 @@ module.exports = class RcCarManager
 
         this.speed = this.config.motorReverse ? -1 * speed : speed;
         this.turn = this.config.turnReverse ? -1 * turn : turn;
+    }
+
+    onMotorStop()
+    {
+        this.speed = 0;
+    }
+
+    onTurnStop()
+    {
+        this.turn = 0;
     }
 
     onExit()
