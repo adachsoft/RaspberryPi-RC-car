@@ -31,7 +31,6 @@ class H264LivePlayer
         }
         w = Math.round(w);
         h = Math.round(h);
-        console.log('changeSizeOfCanvas', w, h);
 
         this.canvas.width(w);
         this.canvas.height(h);

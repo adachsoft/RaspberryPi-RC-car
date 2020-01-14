@@ -7,6 +7,11 @@ module.exports = class VehicleL298nTank extends Vehicle
     constructor(config)
     {
         super();
+
+        console.log('VehicleL298nTank: ', config.tankControlStrategy);
+        const tankControlStrategyClass = require( './TankControlStrategy/' + config.tankControlStrategy + '.js');
+
+        this.tankControlStrategy = new tankControlStrategyClass();
         this.motorL = new MotorL298n(config.pinMotorL0, config.pinMotorL1);
         this.motorR = new MotorL298n(config.pinMotorR0, config.pinMotorR1);
         this.timeOut = config.timeOut;
@@ -23,19 +28,9 @@ module.exports = class VehicleL298nTank extends Vehicle
     {
         val = (parseInt(val) / 100);
         
-        if (0 === val){
-            this.motorL.setSpeed(-this.turnValue);
-            this.motorR.setSpeed(this.turnValue);
-        }else if (this.turnValue < 0){
-            this.motorL.setSpeed(0);
-            this.motorR.setSpeed(val);    
-        }else if (this.turnValue > 0){
-            this.motorL.setSpeed(val);
-            this.motorR.setSpeed(0);
-        }else{
-            this.motorL.setSpeed(val);
-            this.motorR.setSpeed(val);
-        }
+        this.tankControlStrategy.calculate(val, this.turnValue);
+        this.motorL.setSpeed(this.tankControlStrategy.getMotorSpeedL());
+        this.motorR.setSpeed(this.tankControlStrategy.getMotorSpeedR());
         
         if (this.motorTime) {
             clearTimeout(this.motorTime);

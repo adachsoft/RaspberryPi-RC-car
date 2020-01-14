@@ -1,5 +1,17 @@
-#webCamera
+#webCamera 
 {
     width: 640px;
     height: 480px;
+}
+
+.h264LivePlayerButtons 
+{
+    position: fixed;
+    top: 130px;
+    left: 0px;
+    width: 160px;
+    height: 60px;
+    z-index: 1000;
+
+    background-color: rgba(0, 0, 0, 0.5);
 }
