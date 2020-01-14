@@ -12,11 +12,11 @@ module.exports = class DependentOnSpeedStrategy
             this.motorSpeedL = -turn;
             this.motorSpeedR = turn;
         }else if (turn < 0){
-            this.motorSpeedL = speed - this.getTurnStrength(speed);
-            this.motorSpeedR = speed;
-        }else if (turn > 0){
             this.motorSpeedL = speed;
             this.motorSpeedR = speed - this.getTurnStrength(speed);
+        }else if (turn > 0){
+            this.motorSpeedL = speed - this.getTurnStrength(speed);
+            this.motorSpeedR = speed;
         }else{
             this.motorSpeedL = speed;
             this.motorSpeedR = speed;
@@ -27,16 +27,16 @@ module.exports = class DependentOnSpeedStrategy
     {
         speed = Math.abs(speed);
         if (speed < 0.3) {
-            return 0;
+            return 0.8;
         }
         if (speed < 0.5) {
-            return 0.2;
-        }
-        if (speed < 0.7) {
             return 0.5;
         }
+        if (speed < 0.7) {
+            return 0.2;
+        }
 
-        return 0.8;
+        return 0.1;
     }
 
     getMotorSpeedL()

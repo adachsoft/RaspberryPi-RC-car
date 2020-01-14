@@ -1,29 +1,42 @@
 <?php
 
-$configFile = 'config/configServer.json';
+$configFileDefault = 'config/pluginsDefault.json';
+if(!file_exists($configFileDefault)){
+    die('Error file not found');
+}
 
+$configFile = 'config/plugins.json';
 if(!file_exists($configFile)){
     die('Error file not found');
 }
 
-$config = json_decode(file_get_contents($configFile), true);
+$shouldSaveFile = false;
+$plugins = json_decode(file_get_contents($configFile), true);
+$pluginsDefault = json_decode(file_get_contents($configFileDefault), true);
+foreach($pluginsDefault as $plugin)
+{
+    if (pluginExists($plugins, $plugin['name'])) {
+        echo "[Y] ";
+    } else {
+        echo "[N] ";
+        $plugins[] = $plugin;
+        $shouldSaveFile = true;
+    }
+    echo $plugin['name'] . "\r\n";
+}
 
-/*$config['plugins']['Horn'] = [
-    'enable' => true,
-    'name' => 'Horn',
-];*/
-/*
-$config['plugins']['DS1820'] = [
-    'enable' => true,
-    'name' => 'DS1820',
-];*/
-/*
-$config['plugins']['WiFi'] = [
-    'enable' => true,
-    'name' => 'WiFi',
-];*/
-$config['plugins']['GamePad'] = [
-    'enable' => true,
-    'name' => 'GamePad',
-];
-file_put_contents($configFile, json_encode($config));
+if ($shouldSaveFile) {
+    file_put_contents($configFile, json_encode($config));
+}
+
+function pluginExists($plugins, $pluginName)
+{
+    foreach($plugins as $plugin)
+    {
+        if ( $plugin['name'] === $pluginName ) {
+            return true;
+        }
+    }
+    
+    return false;
+}
