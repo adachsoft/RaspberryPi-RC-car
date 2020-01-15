@@ -1,0 +1,10 @@
+{
+    "name": "Udp broadcast",
+    "version": "1.0.0",
+    "tabs": {
+        "udpBroadcast": {
+            "label": "Broadcast",
+            "file": "tab"
+        }
+    }
+}

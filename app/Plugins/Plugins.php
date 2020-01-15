@@ -10,9 +10,12 @@ use App\DataPersister\DataPersisterInterface;
 class Plugins
 {
     const PATH_TO_JS = 'js/';
+    const PATH_TO_CSS = 'css/';
     const PATH_TO_PLUGINS = 'plugins/';
     const TPL_EXT = '.tpl';
     const PATH_TO_TPL = 'tpl/';
+
+    private static $pluginInstances = [];
 
     /**
      * @var DataPersisterInterface
@@ -57,9 +60,43 @@ class Plugins
         return $availablePlugins;
     }
 
+    public function createInstance()
+    {
+        $objects = [];
+        $files = $this->getFilesIfExists('php_main_class');
+        foreach($files as $className => $file){
+            require_once $file;
+            $obj = new $className();
+            if($obj instanceof PluginInterface){
+                $objects[$className] = $obj;
+            }
+        }
+        static::$pluginInstances = $objects;
+
+        return $objects;
+    }
+
+    public function beforeRenderIndex($dataForTpl)
+    {
+        $data = $dataForTpl;
+        foreach(static::$pluginInstances as $plugin){
+            /**
+             * @var PluginInterface $plugin
+             */
+            $data = $plugin->beforeRenderIndex($data);
+        }
+
+        return $data;
+    }
+
     public function getJsFiles()
     {
         return $this->getFilesIfExists('js');
+    }
+
+    public function getCssFiles()
+    {
+        return $this->getFilesIfExists('css');
     }
 
     public function getTplFilesIndex()
@@ -122,8 +159,12 @@ class Plugins
                 return static::PATH_TO_PLUGINS . "{$plugin}/" . static::PATH_TO_TPL . "tab" . static::TPL_EXT;
             case 'js':
                 return static::PATH_TO_PLUGINS . "{$plugin}/" . static::PATH_TO_JS . "{$plugin}.js";
+            case 'css':
+                return static::PATH_TO_PLUGINS . "{$plugin}/" . static::PATH_TO_CSS . "{$plugin}.css";
             case 'metadata':
                 return static::PATH_TO_PLUGINS . "{$plugin}/plugin.json";
+            case 'php_main_class':
+                return static::PATH_TO_PLUGINS . "{$plugin}/$plugin.php";
         }
     }
 

@@ -24,23 +24,6 @@ module.exports = class PluginManager
         }
     }
 
-    /*load2()
-    {
-        for (const [key, value] of Object.entries(this.config.plugins)) {
-            if( value.enable ){
-                console.log('Load plugin: ' + key);
-                try{
-                    let Plugin = require( '../plugins/' + key + '/nodejs/' + key + '.js');
-                    let pluginObj = new Plugin();
-                    this.plugins.push(pluginObj);
-                }catch(e){
-                    console.log('Loading plugin error: ' + e.message);
-                }
-            }
-        }
-    }*/
-
-
     setRcCarManager(rcCarManager)
     {
         this.rcCarManager = rcCarManager;
@@ -62,7 +45,6 @@ module.exports = class PluginManager
 
     onChangeDrivingData(speed, turn)
     {
-        console.log('ZZXC', speed);
         this.rcCarManager.onChangeDrivingData(speed, turn);
     }
 
@@ -118,6 +100,19 @@ module.exports = class PluginManager
             if (plugin.onInit && typeof plugin.onInit === "function") {
                 try{
                     plugin.onInit();
+                }catch(e){
+                    console.log(e);
+                }
+            }
+        });
+    }
+
+    onExit()
+    {
+        this.plugins.forEach((plugin)=>{
+            if (plugin.onExit && typeof plugin.onExit === "function") {
+                try{
+                    plugin.onExit();
                 }catch(e){
                     console.log(e);
                 }

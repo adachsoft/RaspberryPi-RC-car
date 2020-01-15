@@ -2,28 +2,31 @@ const WebSocket = require('ws');
 
 module.exports = class RcCarManager
 {
-    constructor(pluginManager, webSocketServer, config, vehicle)
+    constructor(pluginManager, webSocketServer, config, vehicle, deviceManager)
     {
         this.pluginManager = pluginManager;
         this.pluginManager.setRcCarManager(this);
         this.webSocketServer = webSocketServer;
         this.config = config;
         this.vehicle = vehicle;
+        this.deviceManager = deviceManager;
         this.debugOn = true;
         this.sendTime = null;
-        this.temp = require("pi-temperature");
-        this.cpuTemp = null;
         this.speed = 0;
         this.turn = 0;
+        this.vehicle.setOnMotorStop(()=>{
+            this.onMotorStop();
+        });
+        this.vehicle.setOnTurnStop(()=>{
+            this.onTurnStop();
+        });
     }
 
     init()
     {
         this.webSocketServer.on('connection', (ws, req)=>{this.onConnect(ws, req);});
         this.pluginManager.onInit();
-        setTimeout(()=>{
-            this.measureTemp();
-        }, 500);
+        this.deviceManager.onInit();
     }
 
     onConnect(ws, req)
@@ -57,7 +60,7 @@ module.exports = class RcCarManager
             let data = {
                 speed: this.speed,
                 turn: this.turn,
-                temp: this.cpuTemp,
+                deviceState: this.deviceManager.getData(),
                 plugins: this.pluginManager.onSend()
             };
             let jsonData = JSON.stringify(data);
@@ -71,48 +74,11 @@ module.exports = class RcCarManager
                 }
             });
             this.sendToAll();
-        }, 1000);
-    }
-
-    sendData(ws)
-    {
-        if (this.sendTime!==null) {
-            return;
-        }
-        this.sendTime = setTimeout(()=>{
-            let data = {
-                temp: this.cpuTemp,
-                plugins: this.pluginManager.onSend()
-            };
-            try{
-                ws.send(JSON.stringify(data), ()=>{
-                    this.sendData(ws);
-                });
-            }catch (exception) {
-                clearTimeout(this.sendTime);
-                this.sendTime = null;
-            }
-            this.sendTime = null;
-            this.sendData(ws);
-        }, 100);
-    }
-
-    measureTemp()
-    {
-        this.temp.measure((err, temp)=>{
-            if (!err) {
-                this.cpuTemp = temp;
-            }
-            setTimeout(()=>{
-                this.measureTemp();
-            }, 1000);
-        });
+        }, 500);
     }
 
     onChangeDrivingData(speed, turn)
     {
-        console.log(this.config.motorReverse, speed);
-
         if (this.config.motorReverse) {
             speed = -1 * speed;
         }
@@ -128,6 +94,21 @@ module.exports = class RcCarManager
 
         this.speed = this.config.motorReverse ? -1 * speed : speed;
         this.turn = this.config.turnReverse ? -1 * turn : turn;
+    }
+
+    onMotorStop()
+    {
+        this.speed = 0;
+    }
+
+    onTurnStop()
+    {
+        this.turn = 0;
+    }
+
+    onExit()
+    {
+        this.pluginManager.onExit();
     }
 
     log(str)

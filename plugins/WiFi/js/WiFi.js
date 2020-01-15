@@ -6,7 +6,7 @@ class WiFi
         this.shouldSendData = false;
         this.ssid = '';
         this.password = '';
-
+        
         $(document).ready(()=>{
             this.tab = $('#tabWifiContainer');
             this.currentWiFiName = this.tab.find('#currentWiFiName');

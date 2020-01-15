@@ -8,22 +8,31 @@ $urlToSelf = $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['HTTP_HOST'];
 $urlStream = $urlToSelf . ':8080/stream/video.mjpeg';
 $host = $_SERVER['HTTP_HOST'];
 
-$urlStream = $urlToSelf . ':8080/?action=stream';
-
 $plugins = PluginsFactory::create();
+$plugins->createInstance();
+
+$dataForTpl = [
+    'TIME' => time(),
+    'VERSION' => $version['appVersion'],
+    'HOST' => $host,
+    'URL_STREAM' => $urlStream,
+    'CONFIG' => $config,
+    'PLUGINS_JS_FILES' => $plugins->getJsFiles(),
+    'PLUGINS_CSS_FILES' => $plugins->getCssFiles(),
+    'PLUGINS_NAME' => $plugins->getPlugins(),
+    'PLUGINS' => $plugins,
+    'CONFIG_SERVER' => new Config('configServer'),
+    'CONFIG_VEHICLEL298N' => new Config('VehicleL298n'),
+    'CONFIG_VEHICLEL_SERVO_PWM' => new Config('VehicleServoPWM'),
+    'CAMERA_TPL' => 'camera.tpl',
+    'JS_FILES' => [],
+];
+
+$dataForTpl = $plugins->beforeRenderIndex($dataForTpl);
 
 $smarty = new Smarty();
 $smarty->setTemplateDir('tpl/');
-$smarty->assign('TIME', time());
-$smarty->assign('VERSION', $version['appVersion']);
-$smarty->assign('HOST', $host);
-$smarty->assign('CONFIG', $config);
-$smarty->assign('PLUGINS_JS_FILES', $plugins->getJsFiles());
-$smarty->assign('PLUGINS_NAME', $plugins->getPlugins());
-$smarty->assign('PLUGINS', $plugins);
-$smarty->assign('CONFIG_SERVER', new Config('configServer'));
-$smarty->assign('CONFIG_VEHICLEL298N', new Config('VehicleL298n'));
-$smarty->assign('CONFIG_VEHICLEL_SERVO_PWM', new Config('VehicleServoPWM'));
-$smarty->assign('URL_STREAM', $urlStream);
+foreach($dataForTpl as $key => $value){
+    $smarty->assign($key, $value);
+}
 $smarty->display('index.tpl');
-    

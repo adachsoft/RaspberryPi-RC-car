@@ -3,22 +3,22 @@ class MjpegStreamer
     constructor()
     {
         this.imgStream = null;
+        this.urlStream = null;
     }
 
     init()
     {
         this.imgStream = $('#img_stream');
+        this.urlStream = this.imgStream.data('stream');
     }
 
     onConnecting()
     {
-        
     }
 
     onOpen()
     {
-        let src = this.imgStream.attr('src');
-        this.imgStream.removeAttr("src").attr("src", src);
+        this.imgStream.removeAttr("src").attr("src", this.urlStream);
     }
 
     onClose()

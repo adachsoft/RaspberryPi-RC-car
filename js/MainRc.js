@@ -175,8 +175,11 @@ class MainRc extends Base
         this.pluginManager.onMessage(data);
         this.setEnginePower(data.speed);
         this.setTurnStrength(data.turn);
-        if (typeof data.temp !== 'undefined') {
-            this.meters.meterTempRefresh(data.temp);
+        if (typeof data.deviceState.cpuTemp !== 'undefined') {
+            this.meters.meterTempRefresh(data.deviceState.cpuTemp);
+        }
+        if (typeof data.deviceState.cpuUsage !== 'undefined') {
+            $('#cpu .js-value').text(data.deviceState.cpuUsage + '%' + ' ' + data.deviceState.date);
         }
     }
 

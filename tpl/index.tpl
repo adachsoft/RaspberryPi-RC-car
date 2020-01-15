@@ -8,12 +8,18 @@
     <link rel="stylesheet" type="text/css" href="css/main.css">
     <link href="vendor/twbs/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
     <link href="vendor/components/font-awesome/css/fontawesome-all.min.css" rel="stylesheet" type="text/css" />
+    {foreach from=$PLUGINS_CSS_FILES item=PLUGIN}
+        <link href="{$PLUGIN}" rel="stylesheet" type="text/css" />
+    {/foreach}
     
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="vendor/twbs/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="vendor/gafhyb/justgage/raphael-2.1.4.min.js"></script>
     <script src="vendor/gafhyb/justgage/justgage.js"></script>
     <script src="/node_modules/nipplejs/dist/nipplejs.js"></script>
+    {foreach from=$JS_FILES item=$JS_FILE}
+        <script src="{$JS_FILE}"></script>
+    {/foreach}
     {foreach from=$PLUGINS_JS_FILES item=PLUGIN}
         <script src="{$PLUGIN}"></script>
     {/foreach}
