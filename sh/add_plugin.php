@@ -26,7 +26,7 @@ foreach($pluginsDefault as $plugin)
 }
 
 if ($shouldSaveFile) {
-    file_put_contents($configFile, json_encode($config));
+    file_put_contents($configFile, json_encode($plugins));
 }
 
 function pluginExists($plugins, $pluginName)

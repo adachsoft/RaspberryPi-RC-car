@@ -30,13 +30,13 @@ module.exports = class DependentOnSpeedStrategy
             return 0.8;
         }
         if (speed < 0.5) {
-            return 0.5;
+            return 0.6;
         }
         if (speed < 0.7) {
-            return 0.2;
+            return 0.5;
         }
 
-        return 0.1;
+        return 0.3;
     }
 
     getMotorSpeedL()
