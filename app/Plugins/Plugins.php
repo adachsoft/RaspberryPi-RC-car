@@ -67,7 +67,7 @@ class Plugins
         foreach($files as $className => $file){
             require_once $file;
             $obj = new $className();
-            if($obj instanceof PluginInterface){
+            if ($obj instanceof PluginInterface) {
                 $objects[$className] = $obj;
             }
         }
@@ -107,6 +107,16 @@ class Plugins
     public function getTplFilesTab()
     {
         return $this->getFilesIfExists('tpl_tab');
+    }
+
+    public function getTplFilesPanelLeft()
+    {
+        return $this->getFilesIfExists('tpl_panel_left');
+    }
+
+    public function getTplFilesPanelRight()
+    {
+        return $this->getFilesIfExists('tpl_panel_right');
     }
 
     public function getTabs()
@@ -153,6 +163,10 @@ class Plugins
     {
         switch($type)
         {
+            case 'tpl_panel_right':
+                return static::PATH_TO_PLUGINS . "{$plugin}/" . static::PATH_TO_TPL . "panelRight" . static::TPL_EXT;
+            case 'tpl_panel_left':
+                return static::PATH_TO_PLUGINS . "{$plugin}/" . static::PATH_TO_TPL . "panelLeft" . static::TPL_EXT;
             case 'tpl_index':
                 return static::PATH_TO_PLUGINS . "{$plugin}/" . static::PATH_TO_TPL . "index" . static::TPL_EXT;
             case 'tpl_tab':

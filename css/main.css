@@ -2,6 +2,7 @@ html, body {
     padding: 0;
     margin: 0;
 }
+
 #con {
     position: fixed;
     left: 0;
@@ -12,6 +13,7 @@ html, body {
     margin: 0;
     background-color: rgba(100, 50, 0, 0.3);
 }
+
 #left {
     position: absolute;
     left: 0;
@@ -20,6 +22,7 @@ html, body {
     width: 50%;
     background: rgba(0, 255, 0, 0.1);
 }
+
 #right {
     position: absolute;
     right: 0;
@@ -37,6 +40,10 @@ html, body {
     position: relative;
 }
 
+.containerMain {
+    display: flex;
+}
+
 .containerCtrl {
     width: calc(100vw - 20px);
     height: calc(100vh - 120px);
@@ -45,6 +52,15 @@ html, body {
     position: relative;
     background: rgba(0, 0, 255, 0.1);
 }
+
+.panelLeft {
+    min-width: 100px;
+}
+
+.panelRight {
+    min-width: 100px;
+}
+
 
 .gauge {
   width: 150px;
@@ -139,3 +155,4 @@ html, body {
 .inputInt-4{
     width: 85px;
 }
+

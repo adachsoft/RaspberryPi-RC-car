@@ -2,12 +2,13 @@ module.exports = class INA219
 {
     constructor()
     {
+        this.config = require('../config/INA219.json');
         this.ina219 = require('ina219');
         this.voltage = 0;
         this.current = 0;
         this.power = 0;
-        this.batteryLowVoltage = 3 * 2;
-        this.batteryHighVoltage = 4.2 * 2;
+        this.batteryLowVoltage = this.config.batteryLowVoltage;
+        this.batteryHighVoltage = this.config.batteryHighVoltage;
         this.batteryLevel = 0;
     }
 
