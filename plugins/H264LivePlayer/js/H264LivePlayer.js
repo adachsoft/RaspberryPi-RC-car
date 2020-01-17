@@ -1,7 +1,8 @@
-class H264LivePlayer
+class H264LivePlayer extends PluginBase
 {
     constructor()
     {
+        super();
         this.wsavc = null;
         this.containerCtrl = null;
         this.canvas = null;
@@ -10,6 +11,7 @@ class H264LivePlayer
 
     init()
     {
+        super.init();
         this.containerCtrl = $('.containerCtrl');
         this.canvas = $('#webCamera');
 
@@ -41,7 +43,7 @@ class H264LivePlayer
         let canvas = document.getElementById("webCamera");
 
         // Create h264 player
-        let uri = "ws://" + document.location.host + ':8080';
+        let uri = "ws://" + document.location.host + ':' + this.config.serverPort;
         this.wsavc = new WSAvcPlayer(canvas, "webgl", 1, 35);
         this.wsavc.connect(uri);
         this.wsavc.on('canvasReady', (width, height)=>{

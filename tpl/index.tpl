@@ -17,6 +17,7 @@
     <script src="vendor/gafhyb/justgage/raphael-2.1.4.min.js"></script>
     <script src="vendor/gafhyb/justgage/justgage.js"></script>
     <script src="/node_modules/nipplejs/dist/nipplejs.js"></script>
+    <script src="js/PluginBase.js?t={$TIME}"></script>
     {foreach from=$JS_FILES item=$JS_FILE}
         <script src="{$JS_FILE}"></script>
     {/foreach}
@@ -72,8 +73,10 @@
                 
             });
         }
-        
+
         $( document ).ready(()=> {
+            $('[data-toggle="tooltip"]').tooltip();
+
             $('#speed').on('change', ()=>{
                 save();
             });
@@ -88,6 +91,7 @@
     </script>
 </head>
 <body>
+    <input type="hidden" name="pluginsConfig" value='{$PLUGINS->getAllConfigInJson()}' class="js-pluginsConfig">
     {foreach from=$PLUGINS->getTplFilesIndex() item=PLUGIN_TPL_FILE_INDEX}
         {include file=$PLUGIN_TPL_FILE_INDEX}
     {/foreach}

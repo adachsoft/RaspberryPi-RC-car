@@ -14,6 +14,7 @@ class Plugins
     const PATH_TO_PLUGINS = 'plugins/';
     const TPL_EXT = '.tpl';
     const PATH_TO_TPL = 'tpl/';
+    const PATH_TO_CONFIG = 'config/';
 
     private static $pluginInstances = [];
 
@@ -119,6 +120,26 @@ class Plugins
         return $this->getFilesIfExists('tpl_panel_right');
     }
 
+    public function getConfigFiles()
+    {
+        return $this->getFilesIfExists('config');
+    }
+
+    public function getAllConfig()
+    {
+        $config = [];
+        foreach($this->getConfigFiles() as $plugin => $fileName) {
+            $config[$plugin] = json_decode(file_get_contents($fileName), true);
+        }
+
+        return $config;
+    }
+
+    public function getAllConfigInJson()
+    {
+        return json_encode($this->getAllConfig());
+    }
+
     public function getTabs()
     {
         $tabs = [];
@@ -163,6 +184,8 @@ class Plugins
     {
         switch($type)
         {
+            case 'config':
+                return static::PATH_TO_PLUGINS . "{$plugin}/" . static::PATH_TO_CONFIG . "{$plugin}.json";
             case 'tpl_panel_right':
                 return static::PATH_TO_PLUGINS . "{$plugin}/" . static::PATH_TO_TPL . "panelRight" . static::TPL_EXT;
             case 'tpl_panel_left':
