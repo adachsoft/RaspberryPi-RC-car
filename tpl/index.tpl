@@ -25,6 +25,7 @@
         <script src="{$PLUGIN}"></script>
     {/foreach}
     <script src="js/Base.js?t={$TIME}"></script>
+    <script src="js/EventBus.js?t={$TIME}"></script>
     <script src="js/MainRc.js?t={$TIME}"></script>
     <script src="js/PluginsTab.js?t={$TIME}"></script>
     <script src="js/PluginManager.js?t={$TIME}"></script>
@@ -32,7 +33,8 @@
     <script src="js/Keyboard.js?t={$TIME}"></script>
     <script src="js/ConnectionStatus.js?t={$TIME}"></script>
     <script>
-        const meters = new Meters();
+        const eventBus = new EventBus();
+        const meters = new Meters(eventBus);
         const keyboard = new Keyboard();
         const pluginsTab = new PluginsTab();
         var plugins = new Array();
@@ -43,7 +45,7 @@
 
         const pluginManager = new PluginManager(plugins);
         const host = 'ws://{$HOST}:8000/websockets.php?t={$TIME}';
-        const rcCar = new MainRc(host, pluginManager, meters);
+        const rcCar = new MainRc(host, pluginManager, eventBus);
         
         keyboard.addEventListener(rcCar);
 

@@ -1,7 +1,8 @@
 class Meters
 {
-    constructor()
+    constructor(eventBus)
     {
+        this.eventBus = eventBus;
         this.meterSpeed = null;
         this.meterTurn = null;
         this.meterTemp = null;
@@ -38,12 +39,16 @@ class Meters
             symbol: 'C',
         });
 
-        $('#current_speed').on('change', (e)=>{
-            this.meterSpeed.refresh(-1 * $(e.currentTarget).val());
+        this.eventBus.subscribe('changeSpeed', (data)=>{
+            this.meterSpeed.refresh(-1 * data);
         });
 
-        $('#current_turn').on('change', (e)=>{
-            this.meterTurn.refresh(1 * $(e.currentTarget).val());
+        this.eventBus.subscribe('changeTurn', (data)=>{
+            this.meterSpeed.refresh(-1 * data);
+        });
+
+        this.eventBus.subscribe('changeCpuTemp', (data)=>{
+            this.meterTemp.refresh(data);
         });
     }
 
@@ -74,8 +79,8 @@ class Meters
           }
     }
 
-    meterTempRefresh(value)
+    /*meterTempRefresh(value)
     {
         this.meterTemp.refresh(value);
-    }
+    }*/
 }

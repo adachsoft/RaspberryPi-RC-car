@@ -1,15 +1,17 @@
 
 class MainRc extends Base
 {
-    constructor(host, pluginManager, meters)
+    constructor(host, pluginManager, eventBus)
     {
         super();
         this.host = host;
         this.pluginManager = pluginManager;
-        this.meters = meters;
+        this.eventBus = eventBus;
         this.arrKeys = [];
         this.data = {};
         this.socket = null;
+        this.currentSpeed = 0;
+        this.currentTurn = 0;
     }
     
     init()
@@ -30,22 +32,24 @@ class MainRc extends Base
 
     getEnginePower()
     {
-        return $('#current_speed').val();
+        return this.currentSpeed;
     }
     
     getTurnStrength()
     {
-        return $('#current_turn').val();
+        return this.currentTurn;
     }
     
     setEnginePower(power)
     {
-        $('#current_speed').val(power).trigger('change'); 
+        this.currentSpeed = power;
+        this.eventBus.publish('changeSpeed', power);
     }
     
     setTurnStrength(turn)
     {
-        $('#current_turn').val(turn).trigger('change');
+        this.currentTurn = turn;
+        this.eventBus.publish('changeTurn', turn);
     }
     
     sendData()
@@ -176,7 +180,7 @@ class MainRc extends Base
         this.setEnginePower(data.speed);
         this.setTurnStrength(data.turn);
         if (typeof data.deviceState.cpuTemp !== 'undefined') {
-            this.meters.meterTempRefresh(data.deviceState.cpuTemp);
+            this.eventBus.publish('changeCpuTemp', data.deviceState.cpuTemp);
         }
         if (typeof data.deviceState.cpuUsage !== 'undefined') {
             $('#cpu .js-value').text(data.deviceState.cpuUsage + '%' + ' ' + data.deviceState.date);

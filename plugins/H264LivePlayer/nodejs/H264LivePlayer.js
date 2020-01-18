@@ -6,7 +6,7 @@ module.exports = class H264LivePlayer
 {
     constructor()
     {
-        this.config = require('../config/BlinkingLed.json');
+        this.config = require('../config/H264LivePlayer.json');
         let raspivid = new Raspivid(this.config.width, this.config.height, this.config.fps);
         this.videoServer = new VideoServer({port: this.config.serverPort}, raspivid);
     }
