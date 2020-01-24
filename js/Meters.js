@@ -44,7 +44,7 @@ class Meters
         });
 
         this.eventBus.subscribe('changeTurn', (data)=>{
-            this.meterSpeed.refresh(-1 * data);
+            this.meterTurn.refresh(-1 * data);
         });
 
         this.eventBus.subscribe('changeCpuTemp', (data)=>{

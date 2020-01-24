@@ -1,17 +1,16 @@
 
 class MainRc extends Base
 {
-    constructor(host, pluginManager, eventBus)
+    constructor(host, pluginManager, eventBus, drivingController)
     {
         super();
         this.host = host;
         this.pluginManager = pluginManager;
         this.eventBus = eventBus;
+        this.drivingController = drivingController;
         this.arrKeys = [];
         this.data = {};
         this.socket = null;
-        this.currentSpeed = 0;
-        this.currentTurn = 0;
     }
     
     init()
@@ -20,43 +19,11 @@ class MainRc extends Base
         this.connect();
     }
     
-    getMaxEnginePower()
-    {
-        return $('#speed').val();
-    }
-    
-    getMaxTurnStrength()
-    {
-        return $('#turn').val();
-    }
-
-    getEnginePower()
-    {
-        return this.currentSpeed;
-    }
-    
-    getTurnStrength()
-    {
-        return this.currentTurn;
-    }
-    
-    setEnginePower(power)
-    {
-        this.currentSpeed = power;
-        this.eventBus.publish('changeSpeed', power);
-    }
-    
-    setTurnStrength(turn)
-    {
-        this.currentTurn = turn;
-        this.eventBus.publish('changeTurn', turn);
-    }
-    
     sendData()
     {
         setTimeout(()=>{
             if (this.shouldSend()) {
-                this.getFromKeys();
+                //this.drivingController.getFromKeys();
                 let data = this.makeCmd();
                 this.socket.send(JSON.stringify(data));
             }
@@ -68,18 +35,13 @@ class MainRc extends Base
     {
         let shouldSendData = this.pluginManager.shouldSendData();
 
-        return shouldSendData ||
-                this.arrKeys.indexOf(38) >= 0 || 
-                this.arrKeys.indexOf(40) >= 0 ||
-                this.arrKeys.indexOf(37) >= 0 ||
-                this.arrKeys.indexOf(39) >= 0 ||
-                this.arrKeys.indexOf(72) >= 0;
+        return shouldSendData || this.drivingController.shouldSend();
     }
     
     makeCmd()
     {
-        let speed = this.getEnginePower();
-        let turn = this.getTurnStrength();
+        let speed = this.drivingController.getEnginePower();
+        let turn = this.drivingController.getTurnStrength();
         let pluginsData = this.pluginManager.createDataToSend();
 
         return {
@@ -87,45 +49,6 @@ class MainRc extends Base
             turn: turn,
             plugins: pluginsData
         };
-    }
-    
-    getFromKeys()
-    {
-        let speed = 0;
-        let turn = 0;
-        let bSpeed = false;
-        let bTurn = false;
-        let speedVal = this.getMaxEnginePower();
-        if (this.arrKeys.indexOf(16) >= 0) {
-            speedVal = 100;
-        }
-        if (this.arrKeys.indexOf(38) >= 0) {
-            speed = -1 * speedVal;
-            bSpeed = true;
-        }
-        if (this.arrKeys.indexOf(40) >= 0) {
-            speed = 1 * speedVal;
-            bSpeed = true;
-        }
-        if (this.arrKeys.indexOf(37) >= 0) {
-            turn = -1 * this.getMaxTurnStrength();
-            bTurn = true;
-        }
-        if (this.arrKeys.indexOf(39) >= 0) {
-            turn = 1 * this.getMaxTurnStrength();
-            bTurn = true;
-        }
-        
-        if(bSpeed){
-            this.setEnginePower(speed);
-        }else{
-            this.setEnginePower(0);
-        }
-        if(bTurn){
-            this.setTurnStrength(turn);
-        }else{
-            this.setTurnStrength(0);
-        }
     }
     
     connect()
@@ -177,8 +100,8 @@ class MainRc extends Base
     onSocketMessage(data)
     {
         this.pluginManager.onMessage(data);
-        this.setEnginePower(data.speed);
-        this.setTurnStrength(data.turn);
+        this.eventBus.publish('changeSpeed', data.speed);
+        this.eventBus.publish('changeTurn', data.turn);
         if (typeof data.deviceState.cpuTemp !== 'undefined') {
             this.eventBus.publish('changeCpuTemp', data.deviceState.cpuTemp);
         }
@@ -206,7 +129,6 @@ class MainRc extends Base
     onKeyUp(keyCode, keyboard)
     {
         this.arrKeys = keyboard.getKeys();
-        this.getFromKeys();
         this.pluginManager.onKeyUp(keyboard.getKeys());
     }
 }

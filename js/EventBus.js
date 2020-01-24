@@ -15,6 +15,10 @@ class EventBus
 
     publish(eventName, data=null)
     {
+        if (typeof this.subscribers[eventName] === 'undefined'){
+            return;
+        }
+
         let allSubscribers = this.subscribers[eventName];
         allSubscribers.forEach((element, index) => {
             element(data);

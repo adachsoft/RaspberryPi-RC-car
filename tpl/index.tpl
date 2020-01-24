@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>RaspberryPi RC car - {$VERSION}</title>
-    
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <meta name="viewport" content="width=device-width, initial-scale=0.5, maximum-scale=0.5">
     <link rel="stylesheet" type="text/css" href="css/main.css">
     <link href="vendor/twbs/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
@@ -16,7 +16,7 @@
     <script src="vendor/twbs/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="vendor/gafhyb/justgage/raphael-2.1.4.min.js"></script>
     <script src="vendor/gafhyb/justgage/justgage.js"></script>
-    <script src="/node_modules/nipplejs/dist/nipplejs.js"></script>
+    {*<script src="/node_modules/nipplejs/dist/nipplejs.js"></script>*}
     <script src="js/PluginBase.js?t={$TIME}"></script>
     {foreach from=$JS_FILES item=$JS_FILE}
         <script src="{$JS_FILE}"></script>
@@ -26,17 +26,23 @@
     {/foreach}
     <script src="js/Base.js?t={$TIME}"></script>
     <script src="js/EventBus.js?t={$TIME}"></script>
+    <script src="js/GamePadLib.js?t={$TIME}"></script>
+    <script src="js/GamePadDrivingController.js?t={$TIME}"></script>
     <script src="js/MainRc.js?t={$TIME}"></script>
     <script src="js/PluginsTab.js?t={$TIME}"></script>
     <script src="js/PluginManager.js?t={$TIME}"></script>
     <script src="js/Meters.js?t={$TIME}"></script>
     <script src="js/Keyboard.js?t={$TIME}"></script>
     <script src="js/ConnectionStatus.js?t={$TIME}"></script>
+    <script src="js/DrivingController.js?t={$TIME}"></script>
     <script>
         const eventBus = new EventBus();
+        const gamePadLib = new GamePadLib();
+        const gamePadDrivingController = new GamePadDrivingController(gamePadLib, eventBus);
         const meters = new Meters(eventBus);
         const keyboard = new Keyboard();
         const pluginsTab = new PluginsTab();
+        const drivingController = new DrivingController(eventBus);
         var plugins = new Array();
         {foreach from=$PLUGINS_NAME item=PLUGIN}
             plugins.push(new {$PLUGIN}());
@@ -45,9 +51,11 @@
 
         const pluginManager = new PluginManager(plugins);
         const host = 'ws://{$HOST}:8000/websockets.php?t={$TIME}';
-        const rcCar = new MainRc(host, pluginManager, eventBus);
+        const rcCar = new MainRc(host, pluginManager, eventBus, drivingController);
+        //const rcCar = new MainRc(host, pluginManager, eventBus, gamePadDrivingController);
         
         keyboard.addEventListener(rcCar);
+        keyboard.addEventListener(drivingController);
 
         function save()
         {
@@ -77,6 +85,13 @@
         }
 
         $( document ).ready(()=> {
+            window.addEventListener("gamepadconnected", (e) => {
+                var gp = navigator.getGamepads()[e.gamepad.index];
+                console.log(
+                    "Gamepad connected at index %d: %s. %d buttons, %d axes.",
+                    gp.index, gp.id, gp.buttons.length, gp.axes.length
+                );
+            });
             $('[data-toggle="tooltip"]').tooltip();
 
             $('#speed').on('change', ()=>{
